@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PipelineBuildEvent xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <SourceFile>C:/Project/EyesHaveIt/EyesHaveIt/EyesHaveIt/Content/fonts/futura.fnt</SourceFile>
+  <SourceTime>2017-02-21T20:19:31.7578439-06:00</SourceTime>
+  <DestFile>C:/Project/EyesHaveIt/EyesHaveIt/EyesHaveIt/Content/bin/Windows/fonts/futura.xnb</DestFile>
+  <DestTime>2017-04-05T16:43:35.6841079-05:00</DestTime>
+  <Importer>BitmapFontImporter</Importer>
+  <ImporterTime>2017-04-05T16:07:11.7358033-05:00</ImporterTime>
+  <Processor>BitmapFontProcessor</Processor>
+  <ProcessorTime>2017-04-05T16:07:11.7358033-05:00</ProcessorTime>
+  <Parameters>
+    <Key>packTexturesIntoXnb</Key>
+    <Value>True</Value>
+  </Parameters>
+  <Parameters>
+    <Key>compressTextures</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Dependencies>
+    <string>C:/Project/EyesHaveIt/EyesHaveIt/EyesHaveIt/Content/fonts/futura_0.png</string>
+  </Dependencies>
+  <BuildAsset />
+  <BuildOutput />
+</PipelineBuildEvent>

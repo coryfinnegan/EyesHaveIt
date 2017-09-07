@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PipelineBuildEvent xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <SourceFile>C:/Project/EyesHaveIt/EyesHaveIt/EyesHaveIt/Content/characters/MainGuy/MainGuyAtlas.xml</SourceFile>
+  <SourceTime>2017-04-07T15:19:31.5296537-05:00</SourceTime>
+  <DestFile>C:/Project/EyesHaveIt/EyesHaveIt/EyesHaveIt/Content/bin/DesktopGL/characters/MainGuy/MainGuyAtlas.xnb</DestFile>
+  <DestTime>2017-05-09T22:09:03.9356138-05:00</DestTime>
+  <Importer>XmlImporter</Importer>
+  <ImporterTime>2016-03-30T01:36:08-05:00</ImporterTime>
+  <Processor>TextureAtlasProcessor</Processor>
+  <ProcessorTime>2017-05-09T22:09:01.5614458-05:00</ProcessorTime>
+  <Parameters>
+    <Key>compressTexture</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>animationFPS</Key>
+    <Value>10</Value>
+  </Parameters>
+  <Parameters>
+    <Key>flattenPaths</Key>
+    <Value>True</Value>
+  </Parameters>
+  <Dependencies>
+    <string>characters/MainGuy/Walk/mainGuyWalk1.png</string>
+    <string>characters/MainGuy/Walk/mainGuyWalk2.png</string>
+    <string>characters/MainGuy/Walk/mainGuyWalk3.png</string>
+    <string>characters/MainGuy/Walk/mainGuyWalk4.png</string>
+    <string>characters/MainGuy/Walk/mainGuyWalk5.png</string>
+    <string>characters/MainGuy/Walk/mainGuyWalk6.png</string>
+    <string>characters/MainGuy/Idle/mainGuyIdle1.png</string>
+    <string>characters/MainGuy/Idle/mainGuyIdle2.png</string>
+    <string>characters/MainGuy/Idle/mainGuyIdle3.png</string>
+    <string>characters/MainGuy/Idle/mainGuyIdle4.png</string>
+    <string>characters/MainGuy/Idle/mainGuyIdle5.png</string>
+    <string>characters/MainGuy/Punch/mainGuyPunch_0000_Layer-3.png</string>
+    <string>characters/MainGuy/Punch/mainGuyPunch_0001_Layer-2.png</string>
+    <string>characters/MainGuy/Punch/mainGuyPunch_0002_Layer-1.png</string>
+    <string>characters/MainGuy/Die/mainGuyDie1.png</string>
+    <string>characters/MainGuy/Die/mainGuyDie2.png</string>
+    <string>characters/MainGuy/Die/mainGuyDie3.png</string>
+    <string>characters/MainGuy/Die/mainGuyDie4.png</string>
+  </Dependencies>
+  <BuildAsset />
+  <BuildOutput />
+</PipelineBuildEvent>

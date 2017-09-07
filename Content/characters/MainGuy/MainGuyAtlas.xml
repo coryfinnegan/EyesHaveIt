@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<XnaContent xmlns:ns="Microsoft.Xna.Framework">
+  <Asset Type="System.String[]">
+	<Item>characters/MainGuy/Walk</Item>
+	<Item>characters/MainGuy/Idle</Item>
+	<Item>characters/MainGuy/Punch</Item>
+	<Item>characters/MainGuy/Die</Item>
+  </Asset>
+</XnaContent>

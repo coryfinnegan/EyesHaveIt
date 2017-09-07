@@ -1,0 +1,48 @@
+
+mainGuyWalkPack.png
+size: 256,256
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+mainGuyWalk1
+  rotate: false
+  xy: 50, 87
+  size: 45, 79
+  orig: 45, 79
+  offset: 0, 0
+  index: -1
+mainGuyWalk2
+  rotate: false
+  xy: 98, 170
+  size: 45, 79
+  orig: 45, 79
+  offset: 0, 0
+  index: -1
+mainGuyWalk3
+  rotate: false
+  xy: 2, 2
+  size: 45, 81
+  orig: 45, 81
+  offset: 0, 0
+  index: -1
+mainGuyWalk4
+  rotate: false
+  xy: 2, 168
+  size: 46, 81
+  orig: 46, 81
+  offset: 0, 0
+  index: -1
+mainGuyWalk5
+  rotate: false
+  xy: 2, 85
+  size: 46, 81
+  orig: 46, 81
+  offset: 0, 0
+  index: -1
+mainGuyWalk6
+  rotate: false
+  xy: 50, 168
+  size: 46, 81
+  orig: 46, 81
+  offset: 0, 0
+  index: -1

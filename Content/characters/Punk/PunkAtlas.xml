@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<XnaContent xmlns:ns="Microsoft.Xna.Framework">
+  <Asset Type="System.String[]">
+	<Item>characters/Punk/PunkWalk</Item>
+	<Item>characters/Punk/PunkDie</Item>
+	<Item>characters/Punk/PunkIdle</Item>
+	<Item>characters/Punk/PunkGetUp</Item>
+	<Item>characters/Punk/PunkFall</Item>
+	<Item>characters/Punk/PunkHit</Item>
+	<Item>characters/Punk/PunkPunch</Item>
+  </Asset>
+</XnaContent>

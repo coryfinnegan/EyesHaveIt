@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<XnaContent xmlns:ns="Microsoft.Xna.Framework">
+  <Asset Type="System.String[]">
+  <Item>characters/EnemyAgent/EnemyAgentShoot</Item>
+  <Item>characters/EnemyAgent/EnemyAgentWalk</Item>
+  <Item>characters/EnemyAgent/EnemyAgentDie</Item>
+  <Item>characters/EnemyAgent/EnemyAgentIdle</Item>
+  <Item>characters/EnemyAgent/EnemyAgentFall</Item>
+  <Item>characters/EnemyAgent/EnemyAgentGetUp</Item>
+  <Item>characters/EnemyAgent/EnemyAgentHit</Item>
+  </Asset>
+</XnaContent>

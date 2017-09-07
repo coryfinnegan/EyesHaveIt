@@ -1,0 +1,47 @@
+walkingLib.png
+size: 164, 115
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+mainGuyWalk1
+  rotate: true
+  xy: 1, 35
+  size: 45, 79
+  orig: 45, 79
+  offset: 0, 0
+  index: -1
+mainGuyWalk2
+  rotate: true
+  xy: 84, 84
+  size: 30, 79
+  orig: 45, 79
+  offset: 7, 0
+  index: -1
+mainGuyWalk3
+  rotate: true
+  xy: 1, 82
+  size: 30, 81
+  orig: 45, 81
+  offset: 6, 0
+  index: -1
+mainGuyWalk4
+  rotate: false
+  xy: 84, 1
+  size: 46, 80
+  orig: 46, 81
+  offset: 0, 0
+  index: -1
+mainGuyWalk5
+  rotate: false
+  xy: 132, 1
+  size: 31, 81
+  orig: 46, 81
+  offset: 7, 0
+  index: -1
+mainGuyWalk6
+  rotate: true
+  xy: 1, 1
+  size: 32, 81
+  orig: 46, 81
+  offset: 6, 0
+  index: -1

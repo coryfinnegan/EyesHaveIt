@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PipelineBuildEvent xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <SourceFile>C:/Project/EyesHaveIt/EyesHaveIt/EyesHaveIt/Content/maps/map2.tmx</SourceFile>
+  <SourceTime>2017-04-12T14:37:12.6646632-05:00</SourceTime>
+  <DestFile>C:/Project/EyesHaveIt/EyesHaveIt/EyesHaveIt/Content/bin/Windows/maps/map2.xnb</DestFile>
+  <DestTime>2017-04-12T15:24:34.4565391-05:00</DestTime>
+  <Importer>TiledMapImporter</Importer>
+  <ImporterTime>2017-04-05T16:07:11.7358033-05:00</ImporterTime>
+  <Processor>TiledMapProcessor</Processor>
+  <ProcessorTime>2017-04-05T16:07:11.7358033-05:00</ProcessorTime>
+  <Dependencies />
+  <BuildAsset />
+  <BuildOutput />
+</PipelineBuildEvent>

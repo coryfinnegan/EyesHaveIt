@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PipelineBuildEvent xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <SourceFile>C:/Project/EyesHaveIt/EyesHaveIt/EyesHaveIt/Content/Sound/backgroundMusic.mp3</SourceFile>
+  <SourceTime>2017-04-12T15:19:49.3398531-05:00</SourceTime>
+  <DestFile>C:/Project/EyesHaveIt/EyesHaveIt/EyesHaveIt/Content/bin/Windows/Sound/backgroundMusic.xnb</DestFile>
+  <DestTime>2017-04-12T15:24:40.5614167-05:00</DestTime>
+  <Importer>Mp3Importer</Importer>
+  <ImporterTime>2016-03-30T01:36:08-05:00</ImporterTime>
+  <Processor>SongProcessor</Processor>
+  <ProcessorTime>2016-03-30T01:36:08-05:00</ProcessorTime>
+  <Parameters>
+    <Key>Quality</Key>
+    <Value>Best</Value>
+  </Parameters>
+  <Dependencies />
+  <BuildAsset />
+  <BuildOutput>
+    <string>C:/Project/EyesHaveIt/EyesHaveIt/EyesHaveIt/Content/bin/Windows/Sound/backgroundMusic.wma</string>
+  </BuildOutput>
+</PipelineBuildEvent>

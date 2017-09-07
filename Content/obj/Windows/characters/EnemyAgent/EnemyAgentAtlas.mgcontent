@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PipelineBuildEvent xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <SourceFile>C:/Project/EyesHaveIt/EyesHaveIt/EyesHaveIt/Content/characters/EnemyAgent/EnemyAgentAtlas.xml</SourceFile>
+  <SourceTime>2017-03-16T10:57:07.3824097-05:00</SourceTime>
+  <DestFile>C:/Project/EyesHaveIt/EyesHaveIt/EyesHaveIt/Content/bin/Windows/characters/EnemyAgent/EnemyAgentAtlas.xnb</DestFile>
+  <DestTime>2017-04-05T16:43:36.4575953-05:00</DestTime>
+  <Importer>XmlImporter</Importer>
+  <ImporterTime>2016-03-30T01:36:08-05:00</ImporterTime>
+  <Processor>TextureAtlasProcessor</Processor>
+  <ProcessorTime>2017-04-05T16:07:11.7358033-05:00</ProcessorTime>
+  <Parameters>
+    <Key>compressTexture</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>animationFPS</Key>
+    <Value>10</Value>
+  </Parameters>
+  <Parameters>
+    <Key>flattenPaths</Key>
+    <Value>True</Value>
+  </Parameters>
+  <Dependencies>
+    <string>characters/EnemyAgent/EnemyAgentShoot/EnemyAgentShoot1.png</string>
+    <string>characters/EnemyAgent/EnemyAgentShoot/EnemyAgentShoot2.png</string>
+    <string>characters/EnemyAgent/EnemyAgentShoot/EnemyAgentShoot3.png</string>
+    <string>characters/EnemyAgent/EnemyAgentWalk/EnemyAgentWalk1.png</string>
+    <string>characters/EnemyAgent/EnemyAgentWalk/EnemyAgentWalk2.png</string>
+    <string>characters/EnemyAgent/EnemyAgentWalk/EnemyAgentWalk3.png</string>
+    <string>characters/EnemyAgent/EnemyAgentDie/EnemyAgentDie1.png</string>
+    <string>characters/EnemyAgent/EnemyAgentDie/EnemyAgentDie2.png</string>
+    <string>characters/EnemyAgent/EnemyAgentIdle/EnemyAgentIdle1.png</string>
+    <string>characters/EnemyAgent/EnemyAgentFall/EnemyAgentFall1.png</string>
+    <string>characters/EnemyAgent/EnemyAgentGetUp/EnemyAgentGetUp1.png</string>
+    <string>characters/EnemyAgent/EnemyAgentGetUp/EnemyAgentGetUp2.png</string>
+    <string>characters/EnemyAgent/EnemyAgentGetUp/EnemyAgentGetup3.png</string>
+    <string>characters/EnemyAgent/EnemyAgentHit/EnemyAgentHit1.png</string>
+  </Dependencies>
+  <BuildAsset />
+  <BuildOutput />
+</PipelineBuildEvent>
