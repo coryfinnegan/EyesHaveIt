@@ -1,7 +1,6 @@
 # EyesHaveIt
 Small sidescroller using MonoGame and Nez
 
-# EyesHaveIt
 ## Synopsis
 
 This project is a small sidescroller using MonoGame + Nez. It is inspired by They Live and uses a mechanic like the glasses in the movie to make the protagonist stronger. 
