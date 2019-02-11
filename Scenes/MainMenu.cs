@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Nez;
+﻿using Nez;
 using Microsoft.Xna.Framework;
 using Nez.BitmapFonts;
 using Nez.UI;

@@ -3,7 +3,7 @@
   <SourceFile>C:/Users/rfinnegan/source/repos/EyesHaveIt/Content/Sound/enemyPunch.wav</SourceFile>
   <SourceTime>2019-02-11T09:13:54.240245-06:00</SourceTime>
   <DestFile>C:/Users/rfinnegan/source/repos/EyesHaveIt/Content/bin/DesktopGL/Sound/enemyPunch.xnb</DestFile>
-  <DestTime>2019-02-11T09:16:07.2552659-06:00</DestTime>
+  <DestTime>2019-02-11T10:32:37.794573-06:00</DestTime>
   <Importer>WavImporter</Importer>
   <ImporterTime>2017-03-01T09:05:36-06:00</ImporterTime>
   <Processor>SoundEffectProcessor</Processor>

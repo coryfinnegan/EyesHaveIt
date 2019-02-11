@@ -197,3 +197,13 @@ C:\Users\rfinnegan\source\repos\EyesHaveIt\bin\DesktopGL\x86\Debug\Nez.xml
 C:\Users\rfinnegan\source\repos\EyesHaveIt\bin\DesktopGL\x86\Debug\Nez.dll.config
 C:\Users\rfinnegan\source\repos\EyesHaveIt\bin\DesktopGL\x86\Debug\MonoGame.Framework.dll.config
 C:\Users\rfinnegan\source\repos\EyesHaveIt\obj\x86\Debug\EyesHaveIt.csproj.CopyComplete
+C:\Users\rfinnegan\source\repos\EyesHaveIt\bin\DesktopGL\x86\Debug\x86\SDL2.dll
+C:\Users\rfinnegan\source\repos\EyesHaveIt\bin\DesktopGL\x86\Debug\x64\SDL2.dll
+C:\Users\rfinnegan\source\repos\EyesHaveIt\bin\DesktopGL\x86\Debug\x86\soft_oal.dll
+C:\Users\rfinnegan\source\repos\EyesHaveIt\bin\DesktopGL\x86\Debug\x64\soft_oal.dll
+C:\Users\rfinnegan\source\repos\EyesHaveIt\bin\DesktopGL\x86\Debug\x86\libSDL2-2.0.so.0
+C:\Users\rfinnegan\source\repos\EyesHaveIt\bin\DesktopGL\x86\Debug\x64\libSDL2-2.0.so.0
+C:\Users\rfinnegan\source\repos\EyesHaveIt\bin\DesktopGL\x86\Debug\x86\libopenal.so.1
+C:\Users\rfinnegan\source\repos\EyesHaveIt\bin\DesktopGL\x86\Debug\x64\libopenal.so.1
+C:\Users\rfinnegan\source\repos\EyesHaveIt\bin\DesktopGL\x86\Debug\libSDL2-2.0.0.dylib
+C:\Users\rfinnegan\source\repos\EyesHaveIt\bin\DesktopGL\x86\Debug\libopenal.1.dylib

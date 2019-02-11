@@ -3,11 +3,11 @@
   <SourceFile>C:/Users/rfinnegan/source/repos/EyesHaveIt/Content/maps/testMap2.tmx</SourceFile>
   <SourceTime>2019-02-11T09:13:55.2347935-06:00</SourceTime>
   <DestFile>C:/Users/rfinnegan/source/repos/EyesHaveIt/Content/bin/DesktopGL/maps/testMap2.xnb</DestFile>
-  <DestTime>2019-02-11T09:44:51.3725849-06:00</DestTime>
+  <DestTime>2019-02-11T10:32:36.1320615-06:00</DestTime>
   <Importer>TiledMapImporter</Importer>
-  <ImporterTime>2018-09-27T04:56:14-05:00</ImporterTime>
+  <ImporterTime>2019-02-11T10:32:23.6394234-06:00</ImporterTime>
   <Processor>TiledMapProcessor</Processor>
-  <ProcessorTime>2018-09-27T04:56:14-05:00</ProcessorTime>
+  <ProcessorTime>2019-02-11T10:32:23.6394234-06:00</ProcessorTime>
   <Dependencies />
   <BuildAsset />
   <BuildOutput />

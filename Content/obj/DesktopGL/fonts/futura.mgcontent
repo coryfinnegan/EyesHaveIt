@@ -3,11 +3,11 @@
   <SourceFile>C:/Users/rfinnegan/source/repos/EyesHaveIt/Content/fonts/futura.fnt</SourceFile>
   <SourceTime>2019-02-11T09:13:55.2197793-06:00</SourceTime>
   <DestFile>C:/Users/rfinnegan/source/repos/EyesHaveIt/Content/bin/DesktopGL/fonts/futura.xnb</DestFile>
-  <DestTime>2019-02-11T09:44:50.834787-06:00</DestTime>
+  <DestTime>2019-02-11T10:32:34.9214948-06:00</DestTime>
   <Importer>BitmapFontImporter</Importer>
-  <ImporterTime>2018-09-27T04:56:14-05:00</ImporterTime>
+  <ImporterTime>2019-02-11T10:32:23.6394234-06:00</ImporterTime>
   <Processor>BitmapFontProcessor</Processor>
-  <ProcessorTime>2018-09-27T04:56:14-05:00</ProcessorTime>
+  <ProcessorTime>2019-02-11T10:32:23.6394234-06:00</ProcessorTime>
   <Parameters>
     <Key>packTexturesIntoXnb</Key>
     <Value>True</Value>

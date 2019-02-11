@@ -3,11 +3,11 @@
   <SourceFile>C:/Users/rfinnegan/source/repos/EyesHaveIt/Content/characters/Punk/PunkAtlas.xml</SourceFile>
   <SourceTime>2019-02-11T09:13:55.137393-06:00</SourceTime>
   <DestFile>C:/Users/rfinnegan/source/repos/EyesHaveIt/Content/bin/DesktopGL/characters/Punk/PunkAtlas.xnb</DestFile>
-  <DestTime>2019-02-11T09:44:51.3372652-06:00</DestTime>
+  <DestTime>2019-02-11T10:32:35.3925209-06:00</DestTime>
   <Importer>XmlImporter</Importer>
   <ImporterTime>2017-03-01T09:05:36-06:00</ImporterTime>
   <Processor>TextureAtlasProcessor</Processor>
-  <ProcessorTime>2018-09-27T04:56:14-05:00</ProcessorTime>
+  <ProcessorTime>2019-02-11T10:32:23.6394234-06:00</ProcessorTime>
   <Parameters>
     <Key>compressTexture</Key>
     <Value>False</Value>
