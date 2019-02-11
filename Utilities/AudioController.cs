@@ -9,19 +9,19 @@ using Microsoft.Xna.Framework.Media;
 
 namespace EyesHaveIt.Utilities
 {
-    class AudioController : Component
+    internal class AudioController : Component
     {
-        public SoundEffect playerPunchEffect { private set; get; }
-        public SoundEffect enemyPunchEffect { private set; get; }
-        public SoundEffect enemyShootEffect { private set; get; }
-        public SoundEffect enemyDieEffect { private set; get; }
-        public Song backgroundMusic { private set; get; }
-        public SoundEffect enemyHitEffect { private set; get; }
-        public SoundEffectInstance playerPunch { private set; get; }
-        public SoundEffectInstance enemyPunch { private set; get; }
-        public SoundEffectInstance enemyShoot { private set; get; }
-        public SoundEffectInstance enemyDie { private set; get; }
-        public SoundEffectInstance enemyHit { private set; get; }
+        public SoundEffect PlayerPunchEffect { private set; get; }
+        public SoundEffect EnemyPunchEffect { private set; get; }
+        public SoundEffect EnemyShootEffect { private set; get; }
+        public SoundEffect EnemyDieEffect { private set; get; }
+        public Song BackgroundMusic { private set; get; }
+        public SoundEffect EnemyHitEffect { private set; get; }
+        public SoundEffectInstance PlayerPunch { private set; get; }
+        public SoundEffectInstance EnemyPunch { private set; get; }
+        public SoundEffectInstance EnemyShoot { private set; get; }
+        public SoundEffectInstance EnemyDie { private set; get; }
+        public SoundEffectInstance EnemyHit { private set; get; }
 
 
 
@@ -34,29 +34,29 @@ namespace EyesHaveIt.Utilities
         public override void onAddedToEntity()
         {
             base.onAddedToEntity();
-            playerPunchEffect = entity.scene.content.Load<SoundEffect>("Sound/playerPunch"); //Yes
-            enemyPunchEffect = entity.scene.content.Load<SoundEffect>("Sound/enemyPunch"); //yes
-            enemyShootEffect = entity.scene.content.Load<SoundEffect>("Sound/enemyShoot"); //Yes
-            enemyDieEffect = entity.scene.content.Load<SoundEffect>("Sound/enemyDie"); //Yes
+            PlayerPunchEffect = entity.scene.content.Load<SoundEffect>("Sound/playerPunch"); //Yes
+            EnemyPunchEffect = entity.scene.content.Load<SoundEffect>("Sound/enemyPunch"); //yes
+            EnemyShootEffect = entity.scene.content.Load<SoundEffect>("Sound/enemyShoot"); //Yes
+            EnemyDieEffect = entity.scene.content.Load<SoundEffect>("Sound/enemyDie"); //Yes
 
-            backgroundMusic = entity.scene.content.Load<Song>("Sound/backgroundMusic");//yes
-            playBackgroundMusic();
+            BackgroundMusic = entity.scene.content.Load<Song>("Sound/backgroundMusic");//yes
+            PlayBackgroundMusic();
 
 
-            enemyHitEffect = entity.scene.content.Load<SoundEffect>("Sound/enemyHit"); //Yes
+            EnemyHitEffect = entity.scene.content.Load<SoundEffect>("Sound/enemyHit"); //Yes
 
-            playerPunch = playerPunchEffect.CreateInstance();
-            enemyPunch = enemyPunchEffect.CreateInstance();
-            enemyShoot = enemyShootEffect.CreateInstance();
-            enemyDie = enemyDieEffect.CreateInstance();
-            enemyHit = enemyHitEffect.CreateInstance();
+            PlayerPunch = PlayerPunchEffect.CreateInstance();
+            EnemyPunch = EnemyPunchEffect.CreateInstance();
+            EnemyShoot = EnemyShootEffect.CreateInstance();
+            EnemyDie = EnemyDieEffect.CreateInstance();
+            EnemyHit = EnemyHitEffect.CreateInstance();
             
 
 
         }
-        public void playBackgroundMusic()
+        public void PlayBackgroundMusic()
         {
-            MediaPlayer.Play(backgroundMusic);
+            MediaPlayer.Play(BackgroundMusic);
             MediaPlayer.IsRepeating = true;
         }
 

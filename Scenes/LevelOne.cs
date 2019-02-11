@@ -8,24 +8,17 @@ using Nez.UI;
 
 namespace EyesHaveIt.Scenes
 {
-    class LevelOne : Scene
+    internal class LevelOne : Scene
     {
-        public enum Tags
-        {
-            player, 
-            enemy
-        }
-
-
-        TiledMap backgroundTileMap;
-        Entity enemy1;
-        Entity player;
-        Player playerObject;
-        Utilities.UIController uiController;
+        private TiledMap backgroundTileMap;
+        private Entity enemy1;
+        private Entity player;
+        private Player playerObject;
+        private Utilities.UiController uiController;
         public const int SCREEN_SPACE_RENDER_LAYER = 999;
         public UICanvas canvas;
-        Table _table;
-        ScreenSpaceRenderer _screenSpaceRenderer;
+        private Table _table;
+        private ScreenSpaceRenderer _screenSpaceRenderer;
         public ProgressBar bar;
         public TiledObject endGameZone { private set; get; }
         public Utilities.AudioController audioController { private set; get; }
@@ -44,7 +37,7 @@ namespace EyesHaveIt.Scenes
             var postEffectControllerEntity = createEntity("postEffectController");
             postEffectController = postEffectControllerEntity.addComponent(new Utilities.PostEffectController());
             
-            postEffectController.addScanlines();
+            postEffectController.AddScanlines();
             addPostProcessor(new VignettePostProcessor(0));
 
 
@@ -71,16 +64,19 @@ namespace EyesHaveIt.Scenes
 
             initialize();
         }
-        void setupGlassesEffects()
+
+        private void setupGlassesEffects()
         {
 
         }
-        void setupEnemySpawn()
+
+        private void setupEnemySpawn()
         {
             enemySpawnController = new Utilities.EnemySpawnController(backgroundTileMap);
             createEntity("enemySpawnController").addComponent(enemySpawnController);
         }
-        void setupPlayer(TiledObjectGroup objectLayer)
+
+        private void setupPlayer(TiledObjectGroup objectLayer)
         {
             var spawn = objectLayer.objectWithName("spawn");
             player = createEntity("player");
@@ -88,14 +84,15 @@ namespace EyesHaveIt.Scenes
             player.transform.setPosition(spawn.x, spawn.y);
             camera.addComponent(new FollowCamera(player));
             endGameZone = objectLayer.objectWithName("endGame");
-            playerObject.endGameZone = endGameZone.x;
+            playerObject.EndGameZone = endGameZone.x;
             
         }
         public override void initialize()
         {
             //Dont use - it is called twice
         }
-        void setupEnemies(Nez.Tiled.TiledObjectGroup mapObjectLayer)
+
+        private void setupEnemies(Nez.Tiled.TiledObjectGroup mapObjectLayer)
         {
             
             var enemy1Spawn = mapObjectLayer.objectWithName("enemySpawn1");
@@ -116,12 +113,14 @@ namespace EyesHaveIt.Scenes
             punk1.transform.position = new Vector2(punk1Spawn.x, punk1Spawn.y);
 
         }
-        void setupUI()
+
+        private void setupUI()
         {
-            uiController = new Utilities.UIController();
+            uiController = new Utilities.UiController();
             createEntity("ui").addComponent(uiController);
         }
-        void setupAudio()
+
+        private void setupAudio()
         {
             audioController = new Utilities.AudioController();
             createEntity("audio").addComponent(audioController);

@@ -26,13 +26,13 @@ namespace EyesHaveIt
             EnemyAttacks
         }
         public static Game1 gameRef;
-        Scene.SceneResolutionPolicy policy;
+        private Scene.SceneResolutionPolicy policy;
         public const int SCREEN_SPACE_RENDER_LAYER = 999;
         public UICanvas canvas;
-        Table table;
-        BitmapFont mainMenuFont;
-        List<Button> _sceneButtons = new List<Button>();
-        Scenes.MainMenu mainMenu;
+        private Table table;
+        private BitmapFont mainMenuFont;
+        private List<Button> _sceneButtons = new List<Button>();
+        private Scenes.MainMenu mainMenu;
 
         
 
@@ -58,7 +58,8 @@ namespace EyesHaveIt
         {
             
         }
-        void startMainMenu()
+
+        private void startMainMenu()
         {
             scene = mainMenu;
         }

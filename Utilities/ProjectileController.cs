@@ -8,21 +8,20 @@ using System.Threading.Tasks;
 
 namespace EyesHaveIt.Utilities
 {
-    class ProjectileController : Component, IUpdatable
+    internal class ProjectileController : Component, IUpdatable
     {
-        public Vector2 velocity;
-
-        ProjectileMover _mover;
-        float hitRange = 15;
-        Collider otherCollider;
-        List<ITriggerListener> _tempTriggerList = new List<ITriggerListener>();
-        Collider _collider;
+        public Vector2 Velocity;
+        private ProjectileMover _mover;
+        private float _hitRange = 15;
+        private Collider _otherCollider;
+        private List<ITriggerListener> _tempTriggerList = new List<ITriggerListener>();
+        private Collider _collider;
 
 
 
         public ProjectileController(Vector2 velocity)
         {
-            this.velocity = velocity;
+            this.Velocity = velocity;
 
         }
 
@@ -32,7 +31,8 @@ namespace EyesHaveIt.Utilities
             _mover = entity.getComponent<ProjectileMover>();
             _collider = entity.getComponent<Collider>();
         }
-        void checkBoundaries()
+
+        private void CheckBoundaries()
         {
             if (transform.position.X > entity.scene.camera.bounds.right)
             {
@@ -47,25 +47,22 @@ namespace EyesHaveIt.Utilities
         void IUpdatable.update()
         {
 
-            if (_mover.move(velocity * Time.deltaTime))
+            if (_mover.move(Velocity * Time.deltaTime))
             {
-                otherCollider = _mover.getOtherCollider();
+                _otherCollider = _mover.entity.getComponent<Collider>();
                 entity.destroy();
-                //if (_mover.checkYValue(otherCollider))
-                //{
-                 //   entity.destroy();
-                //}
             }
-            checkBoundaries();
+            CheckBoundaries();
 
 
         }
-        bool checkYValue(Collider inCollider)
+
+        private bool CheckYValue(Collider inCollider)
         {
             //var hitRange = 10;
             var enemyYPos = inCollider.entity.transform.position.Y;
             var playerYPos = transform.position.Y;
-            if ((enemyYPos - playerYPos) >= -hitRange && (enemyYPos - playerYPos) <= hitRange)
+            if ((enemyYPos - playerYPos) >= -_hitRange && (enemyYPos - playerYPos) <= _hitRange)
             {
                 return true;
             }

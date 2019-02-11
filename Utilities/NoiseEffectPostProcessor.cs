@@ -2,7 +2,7 @@
 
 namespace EyesHaveIt.Utilities
 {
-    class NoiseEffectPostProcessor : PostProcessor<NoiseEffect>
+    internal class NoiseEffectPostProcessor : PostProcessor<NoiseEffect>
     {
         public NoiseEffectPostProcessor(int executionOrder) : base(executionOrder)
         {

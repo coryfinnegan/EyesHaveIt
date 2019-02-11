@@ -7,7 +7,7 @@ namespace EyesHaveIt
 {
     public class CameraBounds : Component, IUpdatable
     {
-        public Vector2 min, max;
+        public Vector2 Min, Max;
 
 
         public CameraBounds()
@@ -19,8 +19,8 @@ namespace EyesHaveIt
 
         public CameraBounds(Vector2 min, Vector2 max) : this()
         {
-            this.min = min;
-            this.max = max;
+            this.Min = min;
+            this.Max = max;
         }
 
 
@@ -34,17 +34,17 @@ namespace EyesHaveIt
         {
             var cameraBounds = entity.scene.camera.bounds;
 
-            if (cameraBounds.top < min.Y)
-                entity.scene.camera.position += new Vector2(0, min.Y - cameraBounds.top);
+            if (cameraBounds.top < Min.Y)
+                entity.scene.camera.position += new Vector2(0, Min.Y - cameraBounds.top);
 
-            if (cameraBounds.left < min.X)
-                entity.scene.camera.position += new Vector2(min.X - cameraBounds.left, 0);
+            if (cameraBounds.left < Min.X)
+                entity.scene.camera.position += new Vector2(Min.X - cameraBounds.left, 0);
 
-            if (cameraBounds.bottom > max.Y)
-                entity.scene.camera.position += new Vector2(0, max.Y - cameraBounds.bottom);
+            if (cameraBounds.bottom > Max.Y)
+                entity.scene.camera.position += new Vector2(0, Max.Y - cameraBounds.bottom);
 
-            if (cameraBounds.right > max.X)
-                entity.scene.camera.position += new Vector2(max.X - cameraBounds.right, 0);
+            if (cameraBounds.right > Max.X)
+                entity.scene.camera.position += new Vector2(Max.X - cameraBounds.right, 0);
         }
     }
 }

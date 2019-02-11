@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <SourceFile>C:/Project/EyesHaveIt/EyesHaveIt/EyesHaveIt/Content/Sound/enemyShoot.wav</SourceFile>
-  <SourceTime>2017-04-12T09:55:00.740944-05:00</SourceTime>
-  <DestFile>C:/Project/EyesHaveIt/EyesHaveIt/EyesHaveIt/Content/bin/Windows/Sound/enemyShoot.xnb</DestFile>
-  <DestTime>2017-04-12T15:24:35.5415698-05:00</DestTime>
+  <SourceFile>C:/Users/rfinnegan/source/repos/EyesHaveIt/Content/Sound/enemyShoot.wav</SourceFile>
+  <SourceTime>2019-02-11T09:13:54.2422465-06:00</SourceTime>
+  <DestFile>C:/Users/rfinnegan/source/repos/EyesHaveIt/Content/bin/Windows/Sound/enemyShoot.xnb</DestFile>
+  <DestTime>2019-02-11T09:29:11.2702033-06:00</DestTime>
   <Importer>WavImporter</Importer>
-  <ImporterTime>2016-03-30T01:36:08-05:00</ImporterTime>
+  <ImporterTime>2017-03-01T09:05:36-06:00</ImporterTime>
   <Processor>SoundEffectProcessor</Processor>
-  <ProcessorTime>2016-03-30T01:36:08-05:00</ProcessorTime>
+  <ProcessorTime>2017-03-01T09:05:36-06:00</ProcessorTime>
   <Parameters>
     <Key>Quality</Key>
     <Value>Best</Value>

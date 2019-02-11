@@ -9,7 +9,7 @@ namespace EyesHaveIt.Utilities
 {
     public class HitController : Component, IUpdatable
     {
-        float totalLife;
+        private float _totalLife;
         public HitController()
         {
         }
@@ -17,10 +17,10 @@ namespace EyesHaveIt.Utilities
         void IUpdatable.update()
         {   
         }
-        public void doDamage(float inDamage)
+        public void DoDamage(float inDamage)
         {
-            entity.getComponent<Enemy>().handleHits(inDamage);
-            totalLife -= inDamage;
+            entity.getComponent<Enemy>().HandleHits(inDamage);
+            _totalLife -= inDamage;
             Debug.log("Doing Damage");
             /*
          
@@ -37,10 +37,10 @@ namespace EyesHaveIt.Utilities
                // entity.removeAllComponents();
             }*/
         }
-        public float getLife()
+        public float GetLife()
         {
-            totalLife = entity.getComponent<Enemy>().currentLife;
-            return totalLife;
+            _totalLife = entity.getComponent<Enemy>().CurrentLife;
+            return _totalLife;
         }
     }
 }

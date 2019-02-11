@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <SourceFile>C:/Project/EyesHaveIt/EyesHaveIt/EyesHaveIt/Content/characters/MainGuy/Die/mainGuyDie4.png</SourceFile>
-  <SourceTime>2017-04-07T15:09:23.4813316-05:00</SourceTime>
-  <DestFile>C:/Project/EyesHaveIt/EyesHaveIt/EyesHaveIt/Content/bin/DesktopGL/characters/MainGuy/Die/mainGuyDie4.xnb</DestFile>
-  <DestTime>2017-04-07T15:17:43.8139823-05:00</DestTime>
+  <SourceFile>C:/Users/rfinnegan/source/repos/EyesHaveIt/Content/characters/MainGuy/Die/mainGuyDie4.png</SourceFile>
+  <SourceTime>2019-02-11T09:13:55.1053781-06:00</SourceTime>
+  <DestFile>C:/Users/rfinnegan/source/repos/EyesHaveIt/Content/bin/DesktopGL/characters/MainGuy/Die/mainGuyDie4.xnb</DestFile>
+  <DestTime>2019-02-11T09:16:03.4612885-06:00</DestTime>
   <Importer>TextureImporter</Importer>
-  <ImporterTime>2016-03-30T01:36:08-05:00</ImporterTime>
+  <ImporterTime>2017-03-01T09:05:36-06:00</ImporterTime>
   <Processor>TextureProcessor</Processor>
-  <ProcessorTime>2016-03-30T01:36:08-05:00</ProcessorTime>
+  <ProcessorTime>2017-03-01T09:05:36-06:00</ProcessorTime>
   <Parameters>
     <Key>ColorKeyColor</Key>
     <Value>255,0,255,255</Value>

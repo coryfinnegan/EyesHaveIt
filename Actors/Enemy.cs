@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using EyesHaveIt.Enums;
 using Microsoft.Xna.Framework;
 using Nez;
 using Nez.Tiled;
@@ -13,366 +14,357 @@ namespace EyesHaveIt
 {
     public class Enemy : Component, IUpdatable//, ITriggerListener
     {
-        protected enum Animations
-        {
-            Walk,
-            Shoot,
-            Die,
-            Idle,
-            Fall,
-            GetUp,
-            Hit,
-            Punch
-        }
-        public enum EntityState
-        {
-            Following,
-            Attacking,
-            Hit,
-            Falling,
-            OnGround,
-            GettingUp,
-            RunAway,
-            Dying
-        }
-        protected Game1 gameRef;
-        protected Player playerRef;
+        protected Game1 GameRef;
+        protected Player PlayerRef;
         [Inspectable]
-        protected EntityState entityState;
-        protected String entityType;
-        protected bool enemyCanShootGun;
+        protected EnemyState EnemyState;
+        protected String EntityType;
+        protected bool EnemyCanShootGun;
 
-        protected Mover _mover;
+        protected Mover Mover;
         //TiledMapMover _mover;
-        protected BoxCollider _collider;
+        protected BoxCollider Collider;
 
 
-        protected Sprite<Animations> _animationMaster;
-        protected WeightedGridGraph _weightedGraph;
-        protected List<Point> _weightedSearchPath;
-        protected TiledMap _tileMap;
-        protected TiledTileLayer _collisionLayer;
-        protected Point _start, _end;
-        protected TiledObject playerSpawn;
-        protected Vector2 spawnLocation;
-        protected float _moveSpeed = 75f;
-        protected Animations animation;
-        protected Vector2 movement;
-        protected Vector2 targetPosition;
-        protected int targetPositionRange;
+        protected Sprite<EnemyAnimationState> AnimationMaster;
+        protected WeightedGridGraph WeightedGraph;
+        protected List<Point> WeightedSearchPath;
+        protected TiledMap TileMap;
+        protected TiledTileLayer CollisionLayer;
+        protected Point Start, End;
+        protected TiledObject PlayerSpawn;
+        protected Vector2 SpawnLocation;
+        protected float MoveSpeed = 75f;
+        protected EnemyAnimationState Animation;
+        protected Vector2 Movement;
+        protected Vector2 TargetPosition;
+        protected int TargetPositionRange;
         [Inspectable]
-        public float totalLife { get; set; }//Must always be even
+        public float TotalLife { get; set; }//Must always be even
         [Inspectable]
-        public float currentLife { get; set; }
-        public Utilities.HitController hitController;
-        protected float jumpHeight = 5f;
-        protected float gravity = 30f;
-        protected bool onGround = false;
-        protected bool isFalling = false;
-        protected bool hasFallen = false;
-        protected float currentYValue;
-        protected float fallSpeed = 20f;
+        public float CurrentLife { get; set; }
+        public Utilities.HitController HitController;
+        protected float JumpHeight = 5f;
+        protected float Gravity = 30f;
+        protected bool OnGround = false;
+        protected bool IsFalling = false;
+        protected bool HasFallen = false;
+        protected float CurrentYValue;
+        protected float FallSpeed = 20f;
         [Inspectable]
-        protected float fallSpeedX = 20f;
-        protected bool alive = true;
+        protected float FallSpeedX = 20f;
+        protected bool Alive = true;
 
         //Projectile
         [Inspectable]
-        bool canShoot { get; set; }
-        bool canBeHit;
-        Texture2D bulletTexture;
-        Vector2 outVel = new Vector2(-175, 0);
-        Vector2 shootOffset = new Vector2(45, 30);
-        ITimer shootTask;
+        private bool CanShoot { get; set; }
 
+        private bool _canBeHit;
+        private Texture2D _bulletTexture;
+        private Vector2 _outVel = new Vector2(-175, 0);
+        private Vector2 _shootOffset = new Vector2(45, 30);
+        private ITimer _shootTask;
 
-
-
-
-
-        public Enemy(String inEntityType, int inTotalLife, TiledMap inMap, bool enemyHasGun, int INtargetPositionRange)
+        public Enemy(String inEntityType, int inTotalLife, TiledMap inMap, bool enemyHasGun, int ntargetPositionRange)
         {
-            entityType = inEntityType;
-            _tileMap = inMap;
-            totalLife = inTotalLife;
-            currentLife = totalLife;
-            _collisionLayer = _tileMap.getLayer<TiledTileLayer>("collisionLayer");
-            _weightedGraph = new WeightedGridGraph(_collisionLayer);
-            _start = new Point(1, 1);
-            _end = new Point(10, 10);
-            _weightedSearchPath = _weightedGraph.search(_start, _end);
-            enemyCanShootGun = enemyHasGun;
-            targetPositionRange = INtargetPositionRange;
-            playerRef = Player.playerRef;
-            //.setTag((int)Scenes.LevelOne.Tags.enemy);
+            EntityType = inEntityType;
+            TileMap = inMap;
+            TotalLife = inTotalLife;
+            CurrentLife = TotalLife;
+            CollisionLayer = TileMap.getLayer<TiledTileLayer>("collisionLayer");
+            WeightedGraph = new WeightedGridGraph(CollisionLayer);
+            Start = new Point(1, 1);
+            End = new Point(10, 10);
+            WeightedSearchPath = WeightedGraph.search(Start, End);
+            EnemyCanShootGun = enemyHasGun;
+            TargetPositionRange = ntargetPositionRange;
+            PlayerRef = Player.PlayerRef;
 
         }
         public override void onAddedToEntity()
         {
             base.onAddedToEntity();
-            animationSetup();
-            colliderSetup();
-            pathfindingSetup();
+            entity.setTag((int) Tags.Enemy);
+            EnemyAnimationStateetup();
+            ColliderSetup();
+            PathfindingSetup();
 
-            if (enemyCanShootGun)
+            if (EnemyCanShootGun)
             {
-                bulletTexture = entity.scene.content.Load<Texture2D>("characters/" + entityType + "/" + entityType + "Bullet");
-                canShoot = true;
+                _bulletTexture = entity.scene.content.Load<Texture2D>("characters/" + EntityType + "/" + EntityType + "Bullet");
+                CanShoot = true;
 
             }
         }
-        void pathfindingSetup()
+
+        private void PathfindingSetup()
         {
-            spawnLocation = transform.position;
-            playerSpawn = _tileMap.getObjectGroup("objects").objectWithName("spawn");
-            _start = new Point((int)spawnLocation.X, (int)spawnLocation.Y);
-            _end = new Point(playerSpawn.x, playerSpawn.y);
-            _weightedSearchPath = _weightedGraph.search(_start, _end);
-            setState(EntityState.Following);
+            SpawnLocation = transform.position;
+            PlayerSpawn = TileMap.getObjectGroup("objects").objectWithName("spawn");
+            Start = new Point((int)SpawnLocation.X, (int)SpawnLocation.Y);
+            End = new Point(PlayerSpawn.x, PlayerSpawn.y);
+            WeightedSearchPath = WeightedGraph.search(Start, End);
+            SetState(EnemyState.Following);
         }
-        void animationSetup()
+
+        private void EnemyAnimationStateetup()
         {
-            var atlas = entity.scene.content.Load<TextureAtlas>("characters/" + entityType + "/" + entityType + "Atlas");
-            var walk = atlas.getSpriteAnimation(entityType + "Walk");
+            var atlas = entity.scene.content.Load<TextureAtlas>("characters/" + EntityType + "/" + EntityType + "Atlas");
+            var walk = atlas.getSpriteAnimation(EntityType + "Walk");
             walk.setFps(5f);
             walk.setPingPong(true);
-            _animationMaster = entity.addComponent(new Sprite<Animations>(Animations.Walk, walk));
-            if (enemyCanShootGun)
+            AnimationMaster = entity.addComponent(new Sprite<EnemyAnimationState>(EnemyAnimationState.Walk, walk));
+            if (EnemyCanShootGun)
             {
-                var shoot = atlas.getSpriteAnimation(entityType + "Shoot");
+                var shoot = atlas.getSpriteAnimation(EntityType + "Shoot");
                 shoot.setFps(3f);
-                _animationMaster.addAnimation(Animations.Shoot, shoot);
+                AnimationMaster.addAnimation(EnemyAnimationState.Shoot, shoot);
             }
-            if (!enemyCanShootGun)
+            if (!EnemyCanShootGun)
             {
-                var punch = atlas.getSpriteAnimation(entityType + "Punch");
+                var punch = atlas.getSpriteAnimation(EntityType + "Punch");
                 punch.setFps(3f);
-                _animationMaster.addAnimation(Animations.Punch, punch);
+                AnimationMaster.addAnimation(EnemyAnimationState.Punch, punch);
             }
-            var die = atlas.getSpriteAnimation(entityType + "Die");
+            var die = atlas.getSpriteAnimation(EntityType + "Die");
             die.setFps(100f);
 
-            var idle = atlas.getSpriteAnimation(entityType + "Idle");
-            var fall = atlas.getSpriteAnimation(entityType + "Fall");
-            var getUp = atlas.getSpriteAnimation(entityType + "GetUp");
-            var hit = atlas.getSpriteAnimation(entityType + "Hit");
+            var idle = atlas.getSpriteAnimation(EntityType + "Idle");
+            var fall = atlas.getSpriteAnimation(EntityType + "Fall");
+            var getUp = atlas.getSpriteAnimation(EntityType + "GetUp");
+            var hit = atlas.getSpriteAnimation(EntityType + "Hit");
             getUp.loop = false;
             getUp.setFps(1f);
-            _animationMaster.addAnimation(Animations.Die, die);
-            _animationMaster.addAnimation(Animations.Idle, idle);
-            _animationMaster.addAnimation(Animations.Fall, fall);
-            _animationMaster.addAnimation(Animations.GetUp, getUp);
-            _animationMaster.addAnimation(Animations.Hit, hit);
+            AnimationMaster.addAnimation(EnemyAnimationState.Die, die);
+            AnimationMaster.addAnimation(EnemyAnimationState.Idle, idle);
+            AnimationMaster.addAnimation(EnemyAnimationState.Fall, fall);
+            AnimationMaster.addAnimation(EnemyAnimationState.GetUp, getUp);
+            AnimationMaster.addAnimation(EnemyAnimationState.Hit, hit);
 
         }
-        public virtual void colliderSetup()
+
+        public virtual void ColliderSetup()
         {
-            _collider = entity.addComponent(new BoxCollider());
-            _collider.setWidth(28f);
-            _collider.setHeight(79f);
+            Collider = entity.addComponent(new BoxCollider());
+            Collider.setWidth(28f);
+            Collider.setHeight(79f);
             //_collider.setLocalOffset(new Vector2(-14, -14));
-            _collider.setLocalOffset(new Vector2(14, 0));
-            _mover = entity.addComponent(new Mover());
-            Flags.setFlagExclusive(ref _collider.collidesWithLayers, (int)Game1.PhysicsLayers.PlayerAttacksInactive);
-            Flags.setFlagExclusive(ref _collider.physicsLayer, (int)Game1.PhysicsLayers.Enemy);
-            hitController = entity.addComponent(new Utilities.HitController());
+            Collider.setLocalOffset(new Vector2(14, 0));
+            Mover = entity.addComponent(new Mover());
+            Flags.setFlagExclusive(ref Collider.collidesWithLayers, (int)Game1.PhysicsLayers.PlayerAttacksInactive);
+            Flags.setFlagExclusive(ref Collider.physicsLayer, (int)Game1.PhysicsLayers.Enemy);
+            HitController = entity.addComponent(new Utilities.HitController());
         }
+
         void IUpdatable.update()
         {
-            if (entity.scene != null && (Player.playerRef.playerState != Player.PlayerState.Dead))
+            if (entity.scene != null && (Player.PlayerRef.PlayerState != Enums.PlayerState.Dead))
             {
-                entityStateController();
-                handleAnimation();
-                handleRenderLayers();
-                updateLocations();
-                checkIfDead();
+                EnemyStateController();
+                HandleAnimation();
+                HandleRenderLayers();
+                UpdateLocations();
+                CheckIfDead();
             }
      
         }
-        protected void entityStateController()
+
+        protected void EnemyStateController()
         {
-            switch (entityState)
+            switch (EnemyState)
             {
-                case EntityState.Following:
-                    followPlayer();
+                case EnemyState.Following:
+                    FollowPlayer();
                     break;
-                case EntityState.Falling:
-                    fallOnGround();
+                case EnemyState.Falling:
+                    FallOnGround();
                     break;
-                case EntityState.OnGround:
-                    handleOnGround();
+                case EnemyState.OnGround:
+                    HandleOnGround();
                     break;
-                case EntityState.Dying:
-                    die();
+                case EnemyState.Dying:
+                    Die();
                     break;
-                case EntityState.GettingUp:
-                    getup();
+                case EnemyState.GettingUp:
+                    Getup();
                     break;
-                case EntityState.Hit:
-                    getHit();
+                case EnemyState.Hit:
+                    GetHit();
                     break;
-                case EntityState.Attacking:
-                    attack();
+                case EnemyState.Attacking:
+                    Attack();
 
                     break;
             }
         }
-        public void setState(EntityState inState)
+
+        public void SetState(EnemyState inState)
         {
             if (entity.scene != null)
             {
                 Debug.log("Setting state to: " + inState);
-                entityState = inState;
+                EnemyState = inState;
             }
            
         }
-        protected void handleRenderLayers()
+
+        protected void HandleRenderLayers()
         {
             entity.getComponent<RenderableComponent>().renderLayer = -(int)transform.position.Y;
         }
-        protected void handleAnimation()
+
+        protected void HandleAnimation()
         {
-            detectXFlip();
-            playAnimation();
+            DetectXFlip();
+            PlayAnimation();
         }
-        void playAnimation()
+
+        private void PlayAnimation()
         {
-            if (!_animationMaster.isAnimationPlaying(animation))
+            if (!AnimationMaster.isAnimationPlaying(Animation))
             {
-                _animationMaster.play(animation);
+                AnimationMaster.play(Animation);
             }
         }
-        void slowDownBasedOnPlayerAttack()
+
+        private void SlowDownBasedOnPlayerAttack()
         {
-            if (playerRef.getPunching())
+            if (PlayerRef.IsPunching())
             {
-                _moveSpeed = 25f;
+                MoveSpeed = 25f;
             }
-            else if (!playerRef.getPunching())
+            else if (!PlayerRef.IsPunching())
             {
-                _moveSpeed = 75f;
+                MoveSpeed = 75f;
             }
         }
-        void walkAnimation()
+
+        private void WalkAnimation()
         {
-            animation = Animations.Walk;
-            if (targetPosition.X > entity.transform.position.X)
+            Animation = EnemyAnimationState.Walk;
+            if (TargetPosition.X > entity.transform.position.X)
             {
-                _collider.setLocalOffset(new Vector2(-14, 0));
+                Collider.setLocalOffset(new Vector2(-14, 0));
                 //_animationMaster.flipX = true;
             }
-            if (targetPosition.X < entity.transform.position.X)
+            if (TargetPosition.X < entity.transform.position.X)
             {
-                _collider.setLocalOffset(new Vector2(14, 0));
+                Collider.setLocalOffset(new Vector2(14, 0));
             }
-            if (_weightedSearchPath != null && _weightedSearchPath.Count() <= targetPositionRange)
+            if (WeightedSearchPath != null && WeightedSearchPath.Count() <= TargetPositionRange)
             {
-                animation = Animations.Idle;
+                Animation = EnemyAnimationState.Idle;
             }
         }
-        void detectXFlip()
+
+        private void DetectXFlip()
         {
-            if (targetPosition.X > entity.transform.position.X)
+            if (TargetPosition.X > entity.transform.position.X)
             {
-                _animationMaster.flipX = true;
+                AnimationMaster.flipX = true;
 
-                if (fallSpeedX > 0)
+                if (FallSpeedX > 0)
                 {
-                    outVel = new Vector2(Math.Abs(outVel.X), 0);
-                    fallSpeedX = -fallSpeedX;
-                    shootOffset.X = -shootOffset.X;
+                    _outVel = new Vector2(Math.Abs(_outVel.X), 0);
+                    FallSpeedX = -FallSpeedX;
+                    _shootOffset.X = -_shootOffset.X;
                 }
 
             }
 
-            if (targetPosition.X < entity.transform.position.X)
+            if (TargetPosition.X < entity.transform.position.X)
             {
-                if (outVel.X > 0)
+                if (_outVel.X > 0)
                 {
-                    outVel = -outVel;
+                    _outVel = -_outVel;
                 }
-                _animationMaster.flipX = false;
-                fallSpeedX = Math.Abs(fallSpeedX);
-                shootOffset.X = Math.Abs(shootOffset.X);
+                AnimationMaster.flipX = false;
+                FallSpeedX = Math.Abs(FallSpeedX);
+                _shootOffset.X = Math.Abs(_shootOffset.X);
             }
 
         }
-        void fallOnGround()
+
+        private void FallOnGround()
         {
 
             //falling
-            if (!isFalling && !onGround)
+            if (!IsFalling && !OnGround)
             {
-                animation = Animations.Fall;
+                Animation = EnemyAnimationState.Fall;
                 
-                currentYValue = transform.position.Y;
-                Debug.log("Current Y Value: " + currentYValue);
+                CurrentYValue = transform.position.Y;
+                Debug.log("Current Y Value: " + CurrentYValue);
                 Debug.log("Current Transform.position.Y: " + transform.position.Y);
-                movement.Y = -Mathf.sqrt(jumpHeight * gravity);
-                isFalling = true;
+                Movement.Y = -Mathf.sqrt(JumpHeight * Gravity);
+                IsFalling = true;
             }
-            if (isFalling)
+            if (IsFalling)
             {
-                //animation = Animations.Fall;
-                movement.X += fallSpeedX * Time.deltaTime;
-                movement.Y += gravity * Time.deltaTime;
+                //animation = EnemyAnimationState.Fall;
+                Movement.X += FallSpeedX * Time.deltaTime;
+                Movement.Y += Gravity * Time.deltaTime;
                 //movement.Normalize();
                 CollisionResult res;
-                _mover.move(movement * fallSpeed * Time.deltaTime, out res);
-                if (transform.position.Y >= currentYValue)
+                Mover.move(Movement * FallSpeed * Time.deltaTime, out res);
+                if (transform.position.Y >= CurrentYValue)
                 {
-                    transform.setPosition(new Vector2(transform.position.X, currentYValue));
-                    Debug.log("Current Y Value after ground hit: " + currentYValue);
+                    transform.setPosition(new Vector2(transform.position.X, CurrentYValue));
+                    Debug.log("Current Y Value after ground hit: " + CurrentYValue);
                     Debug.log("Current Transform.position.Y after ground hit: " + transform.position.Y);
-                    isFalling = false;
-                    onGround = true;
-                    setState(EntityState.OnGround);
+                    IsFalling = false;
+                    OnGround = true;
+                    SetState(EnemyState.OnGround);
                 }
             }
         }
-        void handleOnGround()
+
+        private void HandleOnGround()
         {
-            movement = Vector2.Zero;
-            animation = Animations.Die;
-            if (currentLife > 0)
+            Movement = Vector2.Zero;
+            Animation = EnemyAnimationState.Die;
+            if (CurrentLife > 0)
             {
-                setState(EntityState.GettingUp);
+                SetState(EnemyState.GettingUp);
 
             }
-            if (currentLife <= 0)
+            if (CurrentLife <= 0)
             {
-                setState(EntityState.Dying);
+                SetState(EnemyState.Dying);
             }
         }
-        void getup()
+
+        private void Getup()
         {
-            animation = Animations.GetUp;
-            onGround = false;
-            isFalling = false;
-            ITimer task = Core.schedule(2f, false, timer => this.setState(EntityState.Following));
+            Animation = EnemyAnimationState.GetUp;
+            OnGround = false;
+            IsFalling = false;
+            ITimer task = Core.schedule(2f, false, timer => this.SetState(EnemyState.Following));
         }
-        void die()
+
+        private void Die()
         {
-            if (alive)
+            if (Alive)
             {
-                alive = false;
-                animation = Animations.Die;
-                entity.scene.findEntity("audio").getComponent<Utilities.AudioController>().enemyDieEffect.Play();
+                Alive = false;
+                Animation = EnemyAnimationState.Die;
+                entity.scene.findEntity("audio").getComponent<Utilities.AudioController>().EnemyDieEffect.Play();
                 var task = Core.schedule(3f, false, timer => entity.detachFromScene());
             }
         }
-        protected void updateLocations()
+        protected void UpdateLocations()
         {
             var gameScene = entity.scene;
-            var player = gameScene.findObjectOfType<Player>();
-            _start = _tileMap.worldToTilePosition(entity.transform.position);
+            var player = gameScene.findEntity("player");
+            Start = TileMap.worldToTilePosition(entity.transform.position);
 
-            _end = _tileMap.worldToTilePosition(player.transform.position);
-            _weightedSearchPath = _weightedGraph.search(_start, _end);
+            End = TileMap.worldToTilePosition(player.transform.position);
+            WeightedSearchPath = WeightedGraph.search(Start, End);
         }
-        bool shouldFollowPlayer()
+
+        private bool ShouldFollowPlayer()
         {
-            if (_weightedSearchPath != null && _weightedSearchPath.Count() > targetPositionRange)
+            if (WeightedSearchPath != null && WeightedSearchPath.Count() > TargetPositionRange)
             {
                 return true;
             }
@@ -382,110 +374,112 @@ namespace EyesHaveIt
             }
 
         }
-        void followPlayer()
+
+        private void FollowPlayer()
         {
             //can be hit set true
-            if (!canShoot)
-                canShoot = true;
-            if (!canBeHit)
-                canBeHit = true;
-            walkAnimation();
+            if (!CanShoot)
+                CanShoot = true;
+            if (!_canBeHit)
+                _canBeHit = true;
+            WalkAnimation();
 
-            if (shouldFollowPlayer())
+            if (ShouldFollowPlayer())
             {
-                slowDownBasedOnPlayerAttack();
-                targetPosition = _tileMap.tileToWorldPosition(_weightedSearchPath.Last());
-                float x = targetPosition.X - entity.transform.position.X;
-                float y = targetPosition.Y - entity.transform.position.Y;
+                SlowDownBasedOnPlayerAttack();
+                TargetPosition = TileMap.tileToWorldPosition(WeightedSearchPath.Last());
+                float x = TargetPosition.X - entity.transform.position.X;
+                float y = TargetPosition.Y - entity.transform.position.Y;
                 x = (float)(x / Math.Sqrt(x * x + y * y));
                 y = (float)(y / Math.Sqrt(x * x + y * y));
                 Vector2 moveDirection = new Vector2(x, y);
-                movement = moveDirection * _moveSpeed * Time.deltaTime;
+                Movement = moveDirection * MoveSpeed * Time.deltaTime;
                 CollisionResult res;
-                _mover.move(movement, out res);
+                Mover.move(Movement, out res);
             }
-            else if (!shouldFollowPlayer())
+            else if (!ShouldFollowPlayer())
             {
-                setState(EntityState.Attacking);
+                SetState(EnemyState.Attacking);
             }
 
         }
 
-        void getHit()
+        private void GetHit()
         {
-            if (canBeHit)
+            if (_canBeHit)
             {
-                canBeHit = false;
-                animation = Animations.Hit;
-                if (_weightedSearchPath != null && _weightedSearchPath.Count() > targetPositionRange)
+                _canBeHit = false;
+                Animation = EnemyAnimationState.Hit;
+                if (WeightedSearchPath != null && WeightedSearchPath.Count() > TargetPositionRange)
                 {
-                    ITimer newTask = Core.schedule(0.3f, false, newTimer => this.setState(EntityState.Following));
+                    ITimer newTask = Core.schedule(0.3f, false, newTimer => this.SetState(EnemyState.Following));
                 }
-                else if (_weightedSearchPath != null && _weightedSearchPath.Count() <= targetPositionRange)
+                else if (WeightedSearchPath != null && WeightedSearchPath.Count() <= TargetPositionRange)
                 {
-                    ITimer newTask = Core.schedule(0.3f, false, newTimer => this.setState(EntityState.Attacking));
+                    ITimer newTask = Core.schedule(0.3f, false, newTimer => this.SetState(EnemyState.Attacking));
                 }
             }
 
 
         }
-        void attack()
+
+        private void Attack()
         {
-            if (!shouldFollowPlayer())
+            if (!ShouldFollowPlayer())
             {
-                if (enemyCanShootGun)
+                if (EnemyCanShootGun)
                 {
-                    shoot();
+                    Shoot();
                 }
-                if (!enemyCanShootGun)
+                if (!EnemyCanShootGun)
                 {
-                    punch();
+                    Punch();
                 }
             }
-            if (shouldFollowPlayer())
+            if (ShouldFollowPlayer())
             {
-                setState(EntityState.Following);
+                SetState(EnemyState.Following);
             }
 
         }
-        public virtual void punch()
+        public virtual void Punch()
         {
 
-            animation = Animations.Punch;
+            Animation = EnemyAnimationState.Punch;
         }
 
-        public void handleHits(float inDamage)
+        public void HandleHits(float inDamage)
         {
-            if (entityState == EntityState.Following ||
-                entityState == EntityState.Attacking ||
-                entityState == EntityState.RunAway)
+            if (EnemyState == EnemyState.Following ||
+                EnemyState == EnemyState.Attacking ||
+                EnemyState == EnemyState.RunAway)
             {
-                currentLife -= inDamage;
-                if (currentLife == 0)
+                CurrentLife -= inDamage;
+                if (CurrentLife == 0)
                 {
-                    setState(EntityState.Falling);
+                    SetState(EnemyState.Falling);
                 }
-                if (currentLife != 0 && currentLife > totalLife / 2)
+                if (CurrentLife != 0 && CurrentLife > TotalLife / 2)
                 {
-                    entity.scene.findEntity("audio").getComponent<Utilities.AudioController>().enemyHitEffect.Play();
-                    setState(EntityState.Hit);
+                    entity.scene.findEntity("audio").getComponent<Utilities.AudioController>().EnemyHitEffect.Play();
+                    SetState(EnemyState.Hit);
                 }
-                if (currentLife != 0 && currentLife <= totalLife / 2 && !hasFallen)
+                if (CurrentLife != 0 && CurrentLife <= TotalLife / 2 && !HasFallen)
                 {
-                    setState(EntityState.Falling);
+                    SetState(EnemyState.Falling);
                 }
-                if (currentLife != 0 && currentLife <= totalLife && hasFallen)
+                if (CurrentLife != 0 && CurrentLife <= TotalLife && HasFallen)
                 {
-                    entity.scene.findEntity("audio").getComponent<Utilities.AudioController>().enemyHitEffect.Play();
-                    setState(EntityState.Hit);
+                    entity.scene.findEntity("audio").getComponent<Utilities.AudioController>().EnemyHitEffect.Play();
+                    SetState(EnemyState.Hit);
                 }
             }
         }
-        public void makeBullet(Vector2 position, Vector2 velocity)
+        public void MakeBullet(Vector2 position, Vector2 velocity)
         {
             if (entity.scene!= null)
             {
-                if (entityState == EntityState.Attacking)
+                if (EnemyState == EnemyState.Attacking)
                 {
                     var projectile = entity.scene.createEntity("projectile");
                     projectile.position = position;
@@ -495,51 +489,54 @@ namespace EyesHaveIt
                     Flags.setFlagExclusive(ref collider.collidesWithLayers, (int)Game1.PhysicsLayers.Player);
                     Flags.setFlagExclusive(ref collider.physicsLayer, (int)Game1.PhysicsLayers.EnemyAttacks);
                     projectile.scale = new Vector2(1.5f);
-                    var sprite = projectile.addComponent(new Sprite(bulletTexture));
+                    var sprite = projectile.addComponent(new Sprite(_bulletTexture));
                     sprite.renderLayer = entity.getComponent<RenderableComponent>().renderLayer;
-                    entity.scene.findEntity("audio").getComponent<Utilities.AudioController>().enemyShootEffect.Play();
+                    entity.scene.findEntity("audio").getComponent<Utilities.AudioController>().EnemyShootEffect.Play();
 
-                    Core.schedule(1f, false, newTimer => setShootTrue());
+                    Core.schedule(1f, false, newTimer => SetShootTrue());
                 }
             }
         }
-        void setShootTrue()
+
+        private void SetShootTrue()
         {
             if (entity.scene!= null)
             {
-                canShoot = true;
+                CanShoot = true;
             }
         }
-        void shoot()
+
+        private void Shoot()
         {
             if (entity.scene!= null)
             {
-                animation = Animations.Shoot;
-                if (!canBeHit)
-                    canBeHit = true;
-                if (canShoot)
+                Animation = EnemyAnimationState.Shoot;
+                if (!_canBeHit)
+                    _canBeHit = true;
+                if (CanShoot)
                 {
-                    canShoot = false;
-                    animation = Animations.Shoot;
-                    shootTask = Core.schedule(1f, false, newTimer => makeBullet(transform.position - shootOffset, outVel));
+                    CanShoot = false;
+                    Animation = EnemyAnimationState.Shoot;
+                    _shootTask = Core.schedule(1f, false, newTimer => MakeBullet(transform.position - _shootOffset, _outVel));
                 }
             }
 
         }
-        void checkIfStopShooting()
+
+        private void CheckIfStopShooting()
         {
-            if (entityState != EntityState.Attacking && shootTask != null)
+            if (EnemyState != EnemyState.Attacking && _shootTask != null)
             {
-                shootTask.stop();
+                _shootTask.stop();
             }
         }
-        protected void checkIfDead()
+        protected void CheckIfDead()
         {
-            if (currentLife == 0)
+            if (CurrentLife == 0)
             {
-                if (entityState != EntityState.Falling && entityState != EntityState.OnGround && entityState != EntityState.Dying)
-                    setState(EntityState.Falling);
-                //if (animation != Animations.)
+                if (EnemyState != EnemyState.Falling && EnemyState != EnemyState.OnGround && EnemyState != EnemyState.Dying)
+                    SetState(EnemyState.Falling);
+                //if (animation != EnemyAnimationState.)
             }
            
         }

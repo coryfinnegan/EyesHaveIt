@@ -12,7 +12,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace EyesHaveIt.Scenes
 {
-    class EndGameMenu : Scene
+    internal class EndGameMenu : Scene
     {
         public EndGameMenu(String gameResult) : base()
         {

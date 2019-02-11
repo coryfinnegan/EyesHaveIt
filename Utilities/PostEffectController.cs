@@ -7,14 +7,15 @@ using Nez;
 
 namespace EyesHaveIt.Utilities
 {
-    class PostEffectController : Component, IUpdatable
+    internal class PostEffectController : Component, IUpdatable
     {
-        Scene myScene;
-        public GrayscalePostProcessor greyScalePostProcessor { get; set; }
-        public PixelGlitchPostProcessor pixelGlitchPostProcessor { get; set; }
-        public HeatDistortionPostProcessor heatDistortionPostProcessor { get; set; }
-        ScanlinesPostProcessor scanLinesPostProcessor;
-        NoiseEffectPostProcessor noisePostProcessor;
+        private Scene _myScene;
+        public GrayscalePostProcessor GreyScalePostProcessor { get; set; }
+        public PixelGlitchPostProcessor PixelGlitchPostProcessor { get; set; }
+        public HeatDistortionPostProcessor HeatDistortionPostProcessor { get; set; }
+
+        private ScanlinesPostProcessor _scanLinesPostProcessor;
+        private NoiseEffectPostProcessor _noisePostProcessor;
 
         public PostEffectController()
         {
@@ -23,37 +24,37 @@ namespace EyesHaveIt.Utilities
         {
             base.onAddedToEntity();
         }
-        public void addGreyScale()
+        public void AddGreyScale()
         {
-            greyScalePostProcessor = entity.scene.addPostProcessor(new GrayscalePostProcessor(0));
+            GreyScalePostProcessor = entity.scene.addPostProcessor(new GrayscalePostProcessor(0));
         }
-        public void removeGreyScale()
+        public void RemoveGreyScale()
         {
-            entity.scene.removePostProcessor(greyScalePostProcessor);
+            entity.scene.removePostProcessor(GreyScalePostProcessor);
         }
-        public void addPixelGlitch()
+        public void AddPixelGlitch()
         {
-            pixelGlitchPostProcessor = entity.scene.addPostProcessor(new PixelGlitchPostProcessor(0));
+            PixelGlitchPostProcessor = entity.scene.addPostProcessor(new PixelGlitchPostProcessor(0));
         }
-        public void removePixelGlitch()
+        public void RemovePixelGlitch()
         {
-            entity.scene.removePostProcessor(pixelGlitchPostProcessor);
+            entity.scene.removePostProcessor(PixelGlitchPostProcessor);
         }
-        public void addHeatWave()
+        public void AddHeatWave()
         {
-            heatDistortionPostProcessor = entity.scene.addPostProcessor(new HeatDistortionPostProcessor(0));
+            HeatDistortionPostProcessor = entity.scene.addPostProcessor(new HeatDistortionPostProcessor(0));
         }
-        public void removeHeatWave()
+        public void RemoveHeatWave()
         {
-            entity.scene.removePostProcessor(heatDistortionPostProcessor);
+            entity.scene.removePostProcessor(HeatDistortionPostProcessor);
         }
-        public void addScanlines()
+        public void AddScanlines()
         {
-            scanLinesPostProcessor = entity.scene.addPostProcessor(new ScanlinesPostProcessor(0));
+            _scanLinesPostProcessor = entity.scene.addPostProcessor(new ScanlinesPostProcessor(0));
         }
-        public void addNoise()
+        public void AddNoise()
         {
-            noisePostProcessor = entity.scene.addPostProcessor(new NoiseEffectPostProcessor(0));
+            _noisePostProcessor = entity.scene.addPostProcessor(new NoiseEffectPostProcessor(0));
         }
         void IUpdatable.update()
         {
@@ -61,25 +62,27 @@ namespace EyesHaveIt.Utilities
             //movePixelGlitch();
             //moveNoise();
         }
-        void moveScanlines()
+
+        private void MoveScanlines()
         {
-            var scanEffect = scanLinesPostProcessor.effect;
+            var scanEffect = _scanLinesPostProcessor.effect;
             //scanEffect.linesFactor += 1f;
 
             //scanEffect.attenuation += 0.1f;
         }
-        public void increasePixelGlitch(float offsetIncrease)
+        public void IncreasePixelGlitch(float offsetIncrease)
         {
-            pixelGlitchPostProcessor.horizontalOffset += offsetIncrease;
+            PixelGlitchPostProcessor.horizontalOffset += offsetIncrease;
         }
-        void moveNoise()
+
+        private void MoveNoise()
         {
-            var noiseEffect = noisePostProcessor.effect;
+            var noiseEffect = _noisePostProcessor.effect;
             //noiseEffect.tr
         }
-        public void resetPixelGlitch()
+        public void ResetPixelGlitch()
         {
-            pixelGlitchPostProcessor.horizontalOffset = 10f;
+            PixelGlitchPostProcessor.horizontalOffset = 10f;
         }
     }
 }

@@ -39,6 +39,11 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Actors\Punk.cs" />
+    <Compile Include="Enums\EnemyAnimationState.cs" />
+    <Compile Include="Enums\EnemyState.cs" />
+    <Compile Include="Enums\PlayerAnimationState.cs" />
+    <Compile Include="Enums\PlayerState.cs" />
+    <Compile Include="Enums\Tags.cs" />
     <Compile Include="Utilities\AudioController.cs" />
     <Compile Include="Utilities\EnemySpawnController.cs" />
     <Compile Include="Utilities\PostEffectController.cs" />
@@ -59,6 +64,9 @@
     <Compile Include="Utilities\UIController.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="Nez, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\Nez.0.9.2\lib\Nez.dll</HintPath>
+    </Reference>
     <Reference Include="OpenTK">
       <HintPath>$(MonoGameInstallDirectory)\MonoGame\v3.0\Assemblies\DesktopGL\OpenTK.dll</HintPath>
     </Reference>
@@ -79,16 +87,6 @@
   </ItemGroup>
   <ItemGroup>
     <MonoGameContentReference Include="Content\Content.mgcb" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\Nez-master\Nez.PipelineImporter\Nez.PipelineImporter.csproj">
-      <Project>{63e831f4-b847-4150-b5af-cbe059ee27b8}</Project>
-      <Name>Nez.PipelineImporter</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Nez-master\Nez.Portable\Nez.csproj">
-      <Project>{60b7197d-d0d5-405c-90a2-a56903e9b039}</Project>
-      <Name>Nez</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="Content\nez\effects\Bevels.mgfxo" />
@@ -122,6 +120,7 @@
     <None Include="Content\nez\effects\Twist.mgfxo" />
     <None Include="Content\nez\effects\Vignette.mgfxo" />
     <None Include="Content\nez\NezDefaultBMFont.xnb" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Content\images\" />
