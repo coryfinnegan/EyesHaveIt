@@ -5,7 +5,7 @@ using Nez;
 
 namespace EyesHaveIt.Utilities
 {
-    class GrayscalePostProcessor : PostProcessor<GrayscaleEffect>
+    internal class GrayscalePostProcessor : PostProcessor<GrayscaleEffect>
     {
         public GrayscalePostProcessor(int executionOrder) : base(executionOrder)
         {

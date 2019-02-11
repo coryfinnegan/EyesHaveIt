@@ -10,9 +10,10 @@
 
 #-------------------------------- References --------------------------------#
 
-/reference:..\..\..\Nez-master\Nez.PipelineImporter\bin\Debug\Ionic.ZLib.dll
-/reference:..\..\..\Nez-master\Nez.PipelineImporter\bin\Debug\Newtonsoft.Json.dll
-/reference:..\..\..\Nez-master\Nez.PipelineImporter\bin\Debug\Nez.PipelineImporter.dll
+/reference:..\packages\Nez.PipelineImporter.0.9.2\tools\Ionic.ZLib.dll
+/reference:..\packages\Nez.PipelineImporter.0.9.2\tools\Newtonsoft.Json.dll
+/reference:..\packages\Nez.PipelineImporter.0.9.2\tools\Nez.dll
+/reference:..\packages\Nez.PipelineImporter.0.9.2\tools\Nez.PipelineImporter.dll
 
 #---------------------------------- Content ---------------------------------#
 

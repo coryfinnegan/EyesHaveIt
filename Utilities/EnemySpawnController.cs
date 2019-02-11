@@ -3,107 +3,111 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using EyesHaveIt.Enums;
 using Nez;
 using Nez.Tiled;
 using Microsoft.Xna.Framework;
 
 namespace EyesHaveIt.Utilities
 {
-    
-
-    class EnemySpawnController : Component, IUpdatable
+    internal class EnemySpawnController : Component, IUpdatable
     {
-        TiledMap tiledMap;
-        TiledObject[] mapObjects;
-        List<TiledObject> spawnLocations;
-        TiledObjectGroup objectLayer;
-        int spawnCounter = 0;
-        Vector2 leftOffset = new Vector2(-Screen.width+10, 0);
-        Vector2 rightOffset = new Vector2(Screen.width+10, 0);
-        Vector2 topOffset = new Vector2(0, -40);
-        Vector2 bottomOffset = new Vector2(0, 60);
+        private TiledMap _tiledMap;
+        private TiledObject[] _mapObjects;
+        private List<TiledObject> _spawnLocations;
+        private TiledObjectGroup _objectLayer;
+        private int _spawnCounter = 0;
+        private Vector2 _leftOffset = new Vector2(-Screen.width+10, 0);
+        private Vector2 _rightOffset = new Vector2(Screen.width+10, 0);
+        private Vector2 _topOffset = new Vector2(0, -40);
+        private Vector2 _bottomOffset = new Vector2(0, 60);
 
         public EnemySpawnController(TiledMap tiledMap)
         {
-            this.tiledMap = tiledMap;
-            this.objectLayer = tiledMap.getObjectGroup("objects");
+            this._tiledMap = tiledMap;
+            this._objectLayer = tiledMap.getObjectGroup("objects");
 
         }
         public override void onAddedToEntity()
         {
             base.onAddedToEntity();
-            mapObjects = objectLayer.objects;
-            spawnLocations = objectLayer.objectsWithName("enemyWave");
+            _mapObjects = _objectLayer.objects;
+            _spawnLocations = _objectLayer.objectsWithName("enemyWave");
             
 
         }
-        void spawnEnemies()
+
+        private void SpawnEnemies()
         {
-            foreach (var position in spawnLocations){
-                if (checkForPlayerPosition(position))
+            foreach (var position in _spawnLocations){
+                if (CheckForPlayerPosition(position))
                 {
                     //var newSpawnLocation = new Vector2(position.x, position.y);
                     //spawnEnemyPositions(newSpawnLocation, spawnCounter);
-                    spawnCounter++;
+                    _spawnCounter++;
                     //spawnPunk(position, spawnCounter);
                 } 
             }
         }
-        void spawnEnemyPositions()
+
+        private void SpawnEnemyPositions()
         {
-            var position = Player.playerRef.transform.position;
+            var position = Player.PlayerRef.transform.position;
             //first wave
-            if (spawnCounter == 0 && position.X >= spawnLocations[0].x)
+            if (_spawnCounter == 0 && position.X >= _spawnLocations[0].x)
             {
                 Debug.log("Spawn 1");
-                spawnPunk(position + topOffset + rightOffset);
-                var task = Core.schedule(2f, false, timer => spawnPunk(position + topOffset + rightOffset));
-                spawnCounter++;
+                SpawnPunk(position + _topOffset + _rightOffset);
+                var task = Core.schedule(2f, false, timer => SpawnPunk(position + _topOffset + _rightOffset));
+                _spawnCounter++;
                 //spawnPunk(position + bottomOffset + rightOffset);
             }
             //second wave
-            if (spawnCounter == 1 && position.X >= spawnLocations[1].x)
+            if (_spawnCounter == 1 && position.X >= _spawnLocations[1].x)
             {
-                spawnCounter++;
-                spawnPunk(position + leftOffset + topOffset);
-                spawnAgent(position + rightOffset);
-                Core.schedule(2f, false, timer => spawnPunk(position + topOffset + rightOffset));
-                Core.schedule(2f, false, timer => spawnAgent(position + leftOffset));
+                _spawnCounter++;
+                SpawnPunk(position + _leftOffset + _topOffset);
+                SpawnAgent(position + _rightOffset);
+                Core.schedule(2f, false, timer => SpawnPunk(position + _topOffset + _rightOffset));
+                Core.schedule(2f, false, timer => SpawnAgent(position + _leftOffset));
             }
             //third wave
-            if (spawnCounter == 2 && position.X >= spawnLocations[2].x)
+            if (_spawnCounter == 2 && position.X >= _spawnLocations[2].x)
             {
-                spawnCounter++;
-                spawnPunk(position + leftOffset + topOffset);
-                spawnPunk(position + topOffset + rightOffset);
-                spawnAgent(position + rightOffset);
-                spawnAgent(position + leftOffset);
+                _spawnCounter++;
+                SpawnPunk(position + _leftOffset + _topOffset);
+                SpawnPunk(position + _topOffset + _rightOffset);
+                SpawnAgent(position + _rightOffset);
+                SpawnAgent(position + _leftOffset);
             }
-            if (spawnCounter == 0 && position.X == spawnLocations[0].x)
+            if (_spawnCounter == 0 && position.X == _spawnLocations[0].x)
             {
-                spawnCounter++;
+                _spawnCounter++;
             }
         }
-        void spawnPunk(Vector2 position)
+
+        private void SpawnPunk(Vector2 position)
         {
             
             var punk = entity.scene.createEntity("punk");
-            punk.addComponent(new Actors.Punk("Punk", 4, tiledMap, false, 4));
+            punk.addComponent(new Actors.Punk("Punk", 4, _tiledMap, false, 4));
             
             punk.scale = new Vector2(2);
             punk.transform.position = position;
         }
-        void spawnAgent(Vector2 position)
+
+        private void SpawnAgent(Vector2 position)
         {
             var agent = entity.scene.createEntity("agent");
-            agent.addComponent(new Enemy("EnemyAgent", 8, tiledMap, true, 10));
+            agent.addComponent(new Enemy("EnemyAgent", 8, _tiledMap, true, 10));
             
             agent.scale = new Vector2(2);
             agent.transform.position = position;
         }
-        bool checkForPlayerPosition(TiledObject position)
+
+        private bool CheckForPlayerPosition(TiledObject position)
         {
-            if (Player.playerRef.transform.position.X == position.x)
+            if (Player.PlayerRef.transform.position.X == position.x)
             {
                 return true;
             }
@@ -115,7 +119,7 @@ namespace EyesHaveIt.Utilities
         void IUpdatable.update()
         {
             
-            spawnEnemyPositions();
+            SpawnEnemyPositions();
         }
     }
 }

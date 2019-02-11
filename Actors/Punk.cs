@@ -7,99 +7,105 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using EyesHaveIt.Enums;
 
 namespace EyesHaveIt.Actors
 {
-    class Punk : Enemy, IUpdatable
+    internal class Punk : Enemy, IUpdatable
     {
-        BoxCollider punchCollider;
-        int punchXOffset = -23;
-        int punchYOffset = -20;
-        Vector2 punchOffset = new Vector2(-23, -20);
-        int damage = 1;
-        bool isColliding = false;
-        bool soundPlay = false;
-        List<ITriggerListener> _tempTriggerList = new List<ITriggerListener>();
+        private BoxCollider _punchCollider;
+        private int _punchXOffset = -23;
+        private int _punchYOffset = -20;
+        private Vector2 _punchOffset = new Vector2(-23, -20);
+        private int _damage = 1;
+        private bool _isColliding = false;
+        private bool _soundPlay = false;
+        private List<ITriggerListener> _tempTriggerList = new List<ITriggerListener>();
 
-        public Punk(String inEntityType, int inTotalLife, Nez.Tiled.TiledMap inMap, bool enemyHasGun, int INtargetPositionRange) : base(inEntityType, inTotalLife, inMap, enemyHasGun, INtargetPositionRange)
+        public Punk(String inEntityType, int inTotalLife, Nez.Tiled.TiledMap inMap, bool enemyHasGun, int ntargetPositionRange) : base(inEntityType, inTotalLife, inMap, enemyHasGun, ntargetPositionRange)
         {
-            entityType = inEntityType;
-            _tileMap = inMap;
-            totalLife = inTotalLife;
-            currentLife = totalLife;
-            _collisionLayer = _tileMap.getLayer<TiledTileLayer>("collisionLayer");
-            _weightedGraph = new WeightedGridGraph(_collisionLayer);
-            _start = new Point(1, 1);
-            _end = new Point(10, 10);
-            _weightedSearchPath = _weightedGraph.search(_start, _end);
-            enemyCanShootGun = enemyHasGun;
-            targetPositionRange = INtargetPositionRange;
+            EntityType = inEntityType;
+            TileMap = inMap;
+            TotalLife = inTotalLife;
+            CurrentLife = TotalLife;
+            CollisionLayer = TileMap.getLayer<TiledTileLayer>("collisionLayer");
+            WeightedGraph = new WeightedGridGraph(CollisionLayer);
+            Start = new Point(1, 1);
+            End = new Point(10, 10);
+            WeightedSearchPath = WeightedGraph.search(Start, End);
+            EnemyCanShootGun = enemyHasGun;
+            TargetPositionRange = ntargetPositionRange;
 
         }
-        public override void colliderSetup()
+        public override void ColliderSetup()
         {
             
-            _collider = entity.addComponent(new BoxCollider());
-            _mover = entity.addComponent(new Mover());
-            Flags.setFlagExclusive(ref _collider.collidesWithLayers, (int)Game1.PhysicsLayers.PlayerAttacksInactive);
-            Flags.setFlagExclusive(ref _collider.physicsLayer, (int)Game1.PhysicsLayers.Enemy);
-            hitController = entity.addComponent(new Utilities.HitController());
-            punchCollider = new BoxCollider();
-            punchCollider.setWidth(35f);
-            punchCollider.setHeight(5f);
-            punchCollider.setLocalOffset(punchOffset);
-            punchCollider.isTrigger = true;
-            Flags.setFlagExclusive(ref punchCollider.collidesWithLayers, (int)Game1.PhysicsLayers.PlayerAttacksInactive);
-            Flags.setFlagExclusive(ref punchCollider.physicsLayer, (int)Game1.PhysicsLayers.EnemyAttacks);
-            entity.addComponent(punchCollider);
+            Collider = entity.addComponent(new BoxCollider());
+            Mover = entity.addComponent(new Mover());
+            Flags.setFlagExclusive(ref Collider.collidesWithLayers, (int)Game1.PhysicsLayers.PlayerAttacksInactive);
+            Flags.setFlagExclusive(ref Collider.physicsLayer, (int)Game1.PhysicsLayers.Enemy);
+            HitController = entity.addComponent(new Utilities.HitController());
+            _punchCollider = new BoxCollider();
+            _punchCollider.setWidth(35f);
+            _punchCollider.setHeight(5f);
+            _punchCollider.setLocalOffset(_punchOffset);
+            _punchCollider.isTrigger = true;
+            Flags.setFlagExclusive(ref _punchCollider.collidesWithLayers, (int)Game1.PhysicsLayers.PlayerAttacksInactive);
+            Flags.setFlagExclusive(ref _punchCollider.physicsLayer, (int)Game1.PhysicsLayers.EnemyAttacks);
+            entity.addComponent(_punchCollider);
             //punchCollider.setEnabled(false);
         }
-        public override void punch()
+        public override void Punch()
         {
             
-            animation = Animations.Punch;
-            Core.schedule(0.5f, false, newTimer => handlePunchCollision());
+            Animation = EnemyAnimationState.Punch;
+            Core.schedule(0.5f, false, newTimer => HandlePunchCollision());
             //Core.schedule(0.55f, false, newTimer => setPunchCollisionLayer(Game1.PhysicsLayers.PlayerAttacksInactive));
             //Core.schedule(0.5f, false, newTimer => soundPlay = false);
         }
-        void handlePunchCollision()
+
+        private void HandlePunchCollision()
         {
-            playPunchSound();
-            setPunchCollisionLayer(Game1.PhysicsLayers.Player);
-            var neighborColliders = Physics.boxcastBroadphaseExcludingSelf(punchCollider);
+            PlayPunchSound();
+            SetPunchCollisionLayer(Game1.PhysicsLayers.Player);
+            var neighborColliders = Physics.boxcastBroadphaseExcludingSelf(_punchCollider);
             foreach (var neighbor in neighborColliders)
             {
-                if (punchCollider.overlaps(neighbor) && _animationMaster.currentFrame > 0)
+                if (_punchCollider.overlaps(neighbor) && AnimationMaster.currentFrame > 0)
                 {  
-                    notifyTriggerListeners(_collider, neighbor);
+                    NotifyTriggerListeners(Collider, neighbor);
                 }
             }
         }
-        void playPunchSound()
+
+        private void PlayPunchSound()
         {   
-                if (_animationMaster.currentFrame == 1 && !soundPlay)
+                if (AnimationMaster.currentFrame == 1 && !_soundPlay)
                 {
-                    soundPlay = true;
+                    _soundPlay = true;
                 if (entity.scene!= null)
                 {
-                    entity.scene.findEntity("audio").getComponent<Utilities.AudioController>().enemyPunchEffect.Play();
+                    entity.scene.findEntity("audio").getComponent<Utilities.AudioController>().EnemyPunchEffect.Play();
                 }
                     
                 }
-                if (_animationMaster.currentFrame == 2 && soundPlay)
+                if (AnimationMaster.currentFrame == 2 && _soundPlay)
                 {
-                    soundPlay = false;
+                    _soundPlay = false;
                 }
         }
-        void setPunchCollisionLayer(Game1.PhysicsLayers inLayer)
+
+        private void SetPunchCollisionLayer(Game1.PhysicsLayers inLayer)
         {
-            Flags.setFlagExclusive(ref punchCollider.collidesWithLayers, (int)inLayer);
+            Flags.setFlagExclusive(ref _punchCollider.collidesWithLayers, (int)inLayer);
         }
-        void setColliding(bool inBool)
+
+        private void SetColliding(bool inBool)
         {
             //isColliding = inBool;
         }
-        void notifyTriggerListeners(Collider self, Collider other)
+
+        private void NotifyTriggerListeners(Collider self, Collider other)
         {
             // notify any listeners on the Entity of the Collider that we overlapped
             other.entity.getComponents(_tempTriggerList);
@@ -115,28 +121,29 @@ namespace EyesHaveIt.Actors
 
             _tempTriggerList.Clear();
         }
-        void punkXFlip()
+
+        private void PunkXFlip()
         {
-            if (targetPosition.X > entity.transform.position.X)
+            if (TargetPosition.X > entity.transform.position.X)
             {
-                punchCollider.setLocalOffset(new Vector2(-punchOffset.X, punchOffset.Y));
+                _punchCollider.setLocalOffset(new Vector2(-_punchOffset.X, _punchOffset.Y));
             }
-            if (targetPosition.X < entity.transform.position.X)
+            if (TargetPosition.X < entity.transform.position.X)
             {
-                punchCollider.setLocalOffset(new Vector2(punchXOffset, punchOffset.Y));
+                _punchCollider.setLocalOffset(new Vector2(_punchXOffset, _punchOffset.Y));
             }
         }
         void IUpdatable.update()
         {
-            if (entity.scene != null && (Player.playerRef.playerState != Player.PlayerState.Dead))
+            if (entity.scene != null && (Player.PlayerRef.PlayerState != PlayerState.Dead))
             {
-                entityStateController();
-                handleAnimation();
-                punkXFlip();
-                handleRenderLayers();
-                updateLocations();
+                EnemyStateController();
+                HandleAnimation();
+                PunkXFlip();
+                HandleRenderLayers();
+                UpdateLocations();
 
-                checkIfDead();
+                CheckIfDead();
 
             }
 

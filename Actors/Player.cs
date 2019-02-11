@@ -9,84 +9,73 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Nez.LibGdxAtlases;
 using Nez.TextureAtlases;
+using EyesHaveIt.Enums;
 
 namespace EyesHaveIt
 {
     public class Player : Component, IUpdatable //ITriggerListener
     {
+        public static Player PlayerRef;
+        private Mover _mover;
+        private ColliderTriggerHelper _triggerHelper;
+        public Utilities.ProjectileHitDetector HitDetector { private set; get; }
 
-        enum Animations
-        {
-            Walk,
-            Idle,
-            Punch,
-            Die
-            
-        }
-        public enum PlayerState
-        {
-            Alive, 
-            Dead, 
-            Hit
-        }
-        public static Player playerRef;
-        Mover _mover;
-        ColliderTriggerHelper triggerHelper;
-        public Utilities.ProjectileHitDetector hitDetector { private set; get; }
-        Game1 gameRef;
+        private Game1 _gameRef;
+
         //TiledMapMover _mover;
-        float _moveSpeed = 12f;
-        Vector2 _projectileVelocity = new Vector2(175);
-        Vector2 _velocity;
-        BoxCollider _collider;
-        public TiledMapMover.CollisionState _collisionState = new TiledMapMover.CollisionState();
-        Vector2 boundaries;
-        bool punching = false;
-        public Entity currentTarget { private set;  get; }
-        VirtualButton _fireInput;
-        VirtualButton _jumpInput;
-        VirtualButton _endGame;
-        VirtualButton _glassesInput;
-        VirtualIntegerAxis _xAxisInput;
-        VirtualIntegerAxis _yAxisInput;
-        Sprite<Animations> _animationMaster;
-        List<Sprite<Animations>> sprites;
-        Animations animation;
+        private float _moveSpeed = 12f;
+        private Vector2 _projectileVelocity = new Vector2(175);
+        private Vector2 _velocity;
+        private BoxCollider _collider;
+        public TiledMapMover.CollisionState CollisionState = new TiledMapMover.CollisionState();
+        private Vector2 _boundaries;
+        private bool _punching = false;
+        public Entity CurrentTarget { private set;  get; }
 
-        float punchDuration = 0.50f;
-        float punchStartTime;
-        BoxCollider punchCollider;
-        float damage = 1f;
-        bool isColliding = false;
-        int punchXOffset = 23;
-        int punchYOffset = -20;
+        private VirtualButton _fireInput;
+        private VirtualButton _jumpInput;
+        private VirtualButton _endGame;
+        private VirtualButton _glassesInput;
+        private VirtualIntegerAxis _xAxisInput;
+        private VirtualIntegerAxis _yAxisInput;
+        private Sprite<PlayerAnimationState> _animationMaster;
+        private List<Sprite<PlayerAnimationState>> _sprites;
+        private PlayerAnimationState _animation;
+        private float _punchDuration = 0.50f;
+        private float _punchStartTime;
+        private BoxCollider _punchCollider;
+        private float _damage = 1f;
+        private bool _isColliding = false;
+        private int _punchXOffset = 23;
+        private int _punchYOffset = -20;
         [Inspectable]
-        float hitRange = 15;
-        public PlayerState playerState = PlayerState.Alive;
-        public float endGameZone { set; get; }
-        public int score { set; get; }
-        public bool glassesBool = false;
-        bool glitchBool = false;
-        Utilities.PostEffectController postEffectController;
-        public float glassesMeter = 0;
-        public bool hasUsedGlasses = false;
+        private float _hitRange = 15;
+        public PlayerState PlayerState = PlayerState.Alive;
+        public float EndGameZone { set; get; }
+        public int Score { set; get; }
+        public bool GlassesBool = false;
+        private bool _glitchBool = false;
+        private Utilities.PostEffectController _postEffectController;
+        public float GlassesMeter = 0;
+        public bool HasUsedGlasses = false;
 
         public Player(Game1 game)
         {
-            gameRef = game;
-            playerRef = this;
+            _gameRef = game;
+            PlayerRef = this;
         }
 
         public override void onAddedToEntity()
         {
             base.onAddedToEntity();
-            setupAnimation();
-            setupCollision();
+            SetupAnimation();
+            SetupCollision();
             entity.scale = new Vector2(2f, 2f);
-            setupInput();
-            postEffectController = entity.scene.findEntity("postEffectController").getComponent<Utilities.PostEffectController>();
+            SetupInput();
+            _postEffectController = entity.scene.findEntity("postEffectController").getComponent<Utilities.PostEffectController>();
         }
-        void setupAnimation()
+
+        private void SetupAnimation()
         {
             var atlas = entity.scene.content.Load<TextureAtlas>("characters/MainGuy/MainGuyAtlas");
             var walk = atlas.getSpriteAnimation("Walk");
@@ -98,32 +87,33 @@ namespace EyesHaveIt
             punch.setFps(15f);
             punch.setLoop(false);
 
-            _animationMaster = entity.addComponent(new Sprite<Animations>(Animations.Idle, idle));
-            _animationMaster.addAnimation(Animations.Walk, walk);
-            _animationMaster.addAnimation(Animations.Punch, punch);
-            _animationMaster.addAnimation(Animations.Die, die);
+            _animationMaster = entity.addComponent(new Sprite<PlayerAnimationState>(PlayerAnimationState.Idle, idle));
+            _animationMaster.addAnimation(PlayerAnimationState.Walk, walk);
+            _animationMaster.addAnimation(PlayerAnimationState.Punch, punch);
+            _animationMaster.addAnimation(PlayerAnimationState.Die, die);
         }
-        void setupCollision()
+
+        private void SetupCollision()
         {
             _collider = new BoxCollider();
             _collider.setWidth(20f);
             _collider.setHeight(70f);
             Flags.setFlagExclusive(ref _collider.collidesWithLayers, (int)Game1.PhysicsLayers.Background);
             Flags.setFlagExclusive(ref _collider.physicsLayer, (int)Game1.PhysicsLayers.Player);
-            punchCollider = new BoxCollider();
-            punchCollider.setWidth(20f);
-            punchCollider.setHeight(5f);
-            punchCollider.setLocalOffset(new Vector2(punchXOffset, punchYOffset));
-            punchCollider.isTrigger = true;
-            Flags.setFlagExclusive(ref punchCollider.collidesWithLayers, (int)Game1.PhysicsLayers.PlayerAttacksInactive);
-            Flags.setFlagExclusive(ref punchCollider.physicsLayer, (int)Game1.PhysicsLayers.PlayerAttacks);
+            _punchCollider = new BoxCollider();
+            _punchCollider.setWidth(20f);
+            _punchCollider.setHeight(5f);
+            _punchCollider.setLocalOffset(new Vector2(_punchXOffset, _punchYOffset));
+            _punchCollider.isTrigger = true;
+            Flags.setFlagExclusive(ref _punchCollider.collidesWithLayers, (int)Game1.PhysicsLayers.PlayerAttacksInactive);
+            Flags.setFlagExclusive(ref _punchCollider.physicsLayer, (int)Game1.PhysicsLayers.PlayerAttacks);
             entity.addComponent(_collider);
-            entity.addComponent(punchCollider);
+            entity.addComponent(_punchCollider);
             //punchCollider.setEnabled(false);
             //_collider.isTrigger = true;
-            triggerHelper = new ColliderTriggerHelper(entity);
-            hitDetector = new Utilities.ProjectileHitDetector();
-            entity.addComponent(hitDetector);
+            _triggerHelper = new ColliderTriggerHelper(entity);
+            HitDetector = new Utilities.ProjectileHitDetector();
+            entity.addComponent(HitDetector);
 
 
             _mover = entity.addComponent(new Mover());
@@ -137,7 +127,8 @@ namespace EyesHaveIt
             _endGame.deregister();
             _glassesInput.deregister();
         }
-        void setupInput()
+
+        private void SetupInput()
         {
             // setup input for shooting a gun. we will allow z on the keyboard or a on the gamepad
             _fireInput = new VirtualButton();
@@ -169,50 +160,54 @@ namespace EyesHaveIt
             _yAxisInput.nodes.Add(new Nez.VirtualAxis.KeyboardKeys(VirtualInput.OverlapBehavior.TakeNewer, Keys.Up, Keys.Down));
         
         }
-        public void setState(PlayerState inState)
+        public void SetState(PlayerState inState)
         {
             Debug.log("Setting state for player on to: " + inState);
-            playerState = inState;
+            PlayerState = inState;
         }
         void IUpdatable.update()
         {
 
-            checkIfEndGame();
-            playerStateController();
+            EndGameIfReachedEndOfMap();
+            PlayerStateController();
         }
-        void playerStateController()
+
+        private void PlayerStateController()
         {
-            switch (playerState)
+            switch (PlayerState)
             {
                 case PlayerState.Alive:
-                    handleBeingAlive();
+                    HandleBeingAlive();
                     break;
                 case PlayerState.Dead:
-                    die();
+                    Die();
                     break;
                 case PlayerState.Hit:
                     break;
             }
-        }        
-        void handleBeingAlive()
-        {
-            handleMovement();
-            handlePunching();
-            handleRenderLayers();
-            putOnGlasses();
-            managePixelGlitch();
-            killPlayerFromGlasses();
         }
-        void handleRenderLayers()
+
+        private void HandleBeingAlive()
+        {
+            MoveCharacter();
+            ControlPunching();
+            HandleRenderLayers();
+            PutOnGlasses();
+            ManagePixelGlitch();
+            KillPlayerFromGlasses();
+        }
+
+        private void HandleRenderLayers()
         {
             entity.getComponent<RenderableComponent>().renderLayer = -(int)transform.position.Y;
         }
-        bool checkYValue(Collider inCollider)
+
+        private bool CheckYValue(Collider inCollider)
         {
             //var hitRange = 10;
             var enemyYPos = inCollider.entity.transform.position.Y;
             var playerYPos = transform.position.Y;
-            if ((enemyYPos - playerYPos) >= -hitRange && (enemyYPos - playerYPos) <= hitRange)
+            if ((enemyYPos - playerYPos) >= -_hitRange && (enemyYPos - playerYPos) <= _hitRange)
             {
                 return true;
             }
@@ -222,112 +217,113 @@ namespace EyesHaveIt
             }
 
         }
-        void handlePunching()
+
+        private void ControlPunching()
         {
-            isColliding = false;
+            _isColliding = false;
             float totalLife;
             if (_fireInput.isPressed)
             {
 
-                animation = Animations.Punch;
-                punching = true;
-                punchStartTime = Time.time;
-                _animationMaster.play(animation);
-                entity.scene.findEntity("audio").getComponent<Utilities.AudioController>().playerPunch.Play();
+                _animation = PlayerAnimationState.Punch;
+                _punching = true;
+                _punchStartTime = Time.time;
+                _animationMaster.play(_animation);
+                entity.scene.findEntity("audio").getComponent<Utilities.AudioController>().PlayerPunch.Play();
                 //punchCollider.setEnabled(true);
                 //Flags.setFlagExclusive(ref punchCollider.collidesWithLayers, (int)Game1.PhysicsLayers.Enemy);
-                var neighborColliders = Physics.boxcastBroadphaseExcludingSelf(punchCollider);
+                var neighborColliders = Physics.boxcastBroadphaseExcludingSelf(_punchCollider);
                 
                 foreach (var collider in neighborColliders)
                 {
-                    if (punchCollider.overlaps(collider) && collider.entity.getComponent<Utilities.HitController>()!= null && checkYValue(collider))
+                    if (_punchCollider.overlaps(collider) && collider.entity.getComponent<Utilities.HitController>()!= null && CheckYValue(collider))
                     {
-                        checkYValue(collider);
+                        CheckYValue(collider);
                         var hitCollider = collider.entity.getComponent<Utilities.HitController>();
-                        totalLife = hitCollider.getLife();
+                        totalLife = hitCollider.GetLife();
                        
                         if (totalLife> 0)
                         {
-                            if (isColliding)
+                            if (_isColliding)
                             {
                                 return;
                             }
                             else
                             {
                                 Debug.log(this.ToString() + " Damaging:  " + collider.entity.name);
-                                isColliding = true;
-                                collider.entity.getComponent<Utilities.HitController>().doDamage(damage);
-                                currentTarget = collider.entity;
-                                score += 100;
+                                _isColliding = true;
+                                collider.entity.getComponent<Utilities.HitController>().DoDamage(_damage);
+                                CurrentTarget = collider.entity;
+                                Score += 100;
                                 
                             }
                         }
                         else if(totalLife == 0)
                         {
-                            currentTarget = null;
+                            CurrentTarget = null;
                             collider.unregisterColliderWithPhysicsSystem();
                         }
                     }
                 }
             }
-            if ((_animationMaster.isAnimationPlaying(Animations.Punch) && ((Time.time - punchStartTime) >= punchDuration)))
+            if ((_animationMaster.isAnimationPlaying(PlayerAnimationState.Punch) && ((Time.time - _punchStartTime) >= _punchDuration)))
             {
-                punching = false;
-                punchStartTime = 0f;
-                _animationMaster.isPlaying = false;
-                animation = Animations.Idle;
-                _animationMaster.play(animation);
+                _punching = false;
+                _punchStartTime = 0f;
+                _animationMaster.pause();
+                _animation = PlayerAnimationState.Idle;
+                _animationMaster.play(_animation);
             }
         }
 
-        void handleMovement()
+        private void MoveCharacter()
         {
-            if (!punching)
+            if (!_punching)
             {
-                animation = Animations.Idle;
+                _animation = PlayerAnimationState.Idle;
                 var moveDir = new Vector2(_xAxisInput.value, _yAxisInput.value);
                 if (moveDir.X < 0)
                 {
-                    animation = Animations.Walk;
+                    _animation = PlayerAnimationState.Walk;
                     _animationMaster.flipX = true;
                     _velocity.X = -_moveSpeed;
-                    punchCollider.setLocalOffset(new Vector2(-punchXOffset, punchYOffset));
+                    _punchCollider.setLocalOffset(new Vector2(-_punchXOffset, _punchYOffset));
                 }
                 else if (moveDir.X > 0)
                 {
-                    animation = Animations.Walk;
+                    _animation = PlayerAnimationState.Walk;
                     _animationMaster.flipX = false;
                     _velocity.X = _moveSpeed;
-                    punchCollider.setLocalOffset(new Vector2(punchXOffset, punchYOffset));
+                    _punchCollider.setLocalOffset(new Vector2(_punchXOffset, _punchYOffset));
                 }
                 if (moveDir.Y < 0)
                 {
-                    animation = Animations.Walk;
+                    _animation = PlayerAnimationState.Walk;
                     _velocity.Y = -_moveSpeed;
                 }
                 else if (moveDir.Y > 0)
                 {
-                    animation = Animations.Walk;
+                    _animation = PlayerAnimationState.Walk;
                     _velocity.Y = _moveSpeed;
                 }
                 if (moveDir != Vector2.Zero)
                 {
-                    if (!_animationMaster.isAnimationPlaying(animation))
+                    if (!_animationMaster.isAnimationPlaying(_animation))
                     {
-                        _animationMaster.play(animation);
+                        _animationMaster.play(_animation);
                     }
                     var movement = _velocity * _moveSpeed * Time.deltaTime;
 
                     CollisionResult res;
                     _mover.move(movement, out res);
-                    triggerHelper.update();
+                    _triggerHelper.update();
                 }
                 else
                 {
-                    if (!_animationMaster.isAnimationPlaying(Animations.Idle) && !_animationMaster.isAnimationPlaying(Animations.Punch))
+                    if (!_animationMaster.isAnimationPlaying(PlayerAnimationState.Idle) && !_animationMaster.isAnimationPlaying(PlayerAnimationState.Punch))
                     {
-                        animation = Animations.Idle;
-                        _animationMaster.play(animation);
+                        _animation = PlayerAnimationState.Idle;
+                        _animationMaster.play(_animation);
                     }
                     _velocity.X = 0;
                     _velocity.Y = 0;
@@ -335,110 +331,119 @@ namespace EyesHaveIt
             }
             
         }
-        
-       void die()
+
+        private void Die()
         {
-            animation = Animations.Die;
-            if (!_animationMaster.isAnimationPlaying(animation))
+            _animation = PlayerAnimationState.Die;
+            if (!_animationMaster.isAnimationPlaying(_animation))
             {
-                _animationMaster.play(animation);
+                _animationMaster.play(_animation);
                 
             }
             Core.schedule(5f, false, newTimer => Game1.endGameMenu("lose"));
         }
-        public bool getPunching()
+        public bool IsPunching()
         {
-            return punching;
+            return _punching;
         }
-        void checkIfEndGame()
+
+        private void EndGameIfReachedEndOfMap()
         {
-            if (transform.position.X >= endGameZone && getEnemyCount() <=0) 
+            if (transform.position.X >= EndGameZone && GetEnemyCount() <=0) 
             {
                 Core.schedule(5f, false, newTimer => Game1.endGameMenu("win"));
             }
         }
-        int getEnemyCount()
+
+        private int GetEnemyCount()
         {
-            int count = entity.scene.findObjectsOfType<Enemy>().Count;
+            var count = entity.scene.findEntitiesWithTag((int)Enums.Tags.Enemy).Count;
             return count;
         }
-        void putOnGlasses()
+
+        private void PutOnGlasses()
         {
             if (_glassesInput.isPressed)
             {
-                hasUsedGlasses = true;
-                if (glassesBool)
+                HasUsedGlasses = true;
+                if (GlassesBool)
                 {
-                    glassesBool = false;
-                    postEffectController.removeGreyScale();
-                    damage = 1f;         
-                    if (glitchBool)
+                    GlassesBool = false;
+                    _postEffectController.RemoveGreyScale();
+                    _damage = 1f;         
+                    if (_glitchBool)
                     {
-                        glitchBool = false;
-                        postEffectController.removePixelGlitch();
+                        _glitchBool = false;
+                        _postEffectController.RemovePixelGlitch();
                     }         
                 }
                 else
                 {
-                    damage = 4f;
-                    glassesBool = true;
-                    postEffectController.addGreyScale();
+                    _damage = 4f;
+                    GlassesBool = true;
+                    _postEffectController.AddGreyScale();
 
                 }
             }
         }
-        void managePixelGlitch()
+
+        private void ManagePixelGlitch()
         {
-            if (glassesBool)
+            if (GlassesBool)
             {  
-                increaseGlassesMeter();   
+                IncreaseGlassesMeter();   
 
             }
-            if (!glassesBool)
+            if (!GlassesBool)
             {
-                decreaseGlassesMeter();
+                DecreaseGlassesMeter();
             }
 
         }
-        void decreaseGlassesMeter()
+
+        private void DecreaseGlassesMeter()
         {
             float decreaseAmount = -0.01f;
-            glassesMeter += decreaseAmount;
-            Mathf.clamp(glassesMeter, 0, 146);
+            GlassesMeter += decreaseAmount;
+            Mathf.clamp(GlassesMeter, 0, 146);
         }
-        void addPixelGlitch()
+
+        private void AddPixelGlitch()
         {
-            if (glassesMeter >= 10 && !glitchBool)
+            if (GlassesMeter >= 10 && !_glitchBool)
             {
-                glitchBool = true;
-                postEffectController.addPixelGlitch();
-                postEffectController.pixelGlitchPostProcessor.horizontalOffset = 0.1f;
+                _glitchBool = true;
+                _postEffectController.AddPixelGlitch();
+                _postEffectController.PixelGlitchPostProcessor.horizontalOffset = 0.1f;
 
             }
         }
-        void increaseGlassesMeter()
+
+        private void IncreaseGlassesMeter()
         {
-            if (glassesBool)
+            if (GlassesBool)
             {
-                glassesMeter += 0.1f;
-                addPixelGlitch();
-                if (glitchBool)
-                    increasePixelGlitch();
+                GlassesMeter += 0.1f;
+                AddPixelGlitch();
+                if (_glitchBool)
+                    IncreasePixelGlitch();
             }
         }
-        void increasePixelGlitch()
+
+        private void IncreasePixelGlitch()
         {
             var offsetIncrease = 0.1f;
-            if ((int)glassesMeter % 2 == 0)
+            if ((int)GlassesMeter % 2 == 0)
             {
-                postEffectController.increasePixelGlitch(offsetIncrease);
+                _postEffectController.IncreasePixelGlitch(offsetIncrease);
             }
         }
-        void killPlayerFromGlasses()
+
+        private void KillPlayerFromGlasses()
         {
-            if (glassesMeter >= 145 && playerState != PlayerState.Dead)
+            if (GlassesMeter >= 145 && PlayerState != PlayerState.Dead)
             {
-                playerState = PlayerState.Dead;
+                PlayerState = PlayerState.Dead;
             }
         }
     }

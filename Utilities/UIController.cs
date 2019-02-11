@@ -9,137 +9,148 @@ using Microsoft.Xna.Framework;
 
 namespace EyesHaveIt.Utilities
 {
-    class UIController : Component, IUpdatable
+    internal class UiController : Component, IUpdatable
     {
-        public const int SCREEN_SPACE_RENDER_LAYER = 999;
-        UICanvas canvas;
-        Table table;
-        Skin skin;
-        Button healthBar;
-        Button enemyHealthBar;
-        Button glassesBar;
-        ScreenSpaceRenderer screenSpaceRender;
-        bool enemyEngaged = false;
-        int score = 0;
-        Entity scoreEntity;
-        Entity tutorial;
+        public const int ScreenSpaceRenderLayer = 999;
+        private UICanvas _canvas;
+        private Table _table;
+        private Skin _skin;
+        private Button _healthBar;
+        private Button _enemyHealthBar;
+        private Button _glassesBar;
+        private ScreenSpaceRenderer _screenSpaceRender;
+        private bool _enemyEngaged = false;
+        private int _score = 0;
+        private Entity _scoreEntity;
+        private Entity _tutorial;
 
-        public UIController()
+        public UiController()
         {
-            screenSpaceRender = new ScreenSpaceRenderer(100, SCREEN_SPACE_RENDER_LAYER);
+            _screenSpaceRender = new ScreenSpaceRenderer(100, ScreenSpaceRenderLayer);
             //Scene.final
 
         }
         public override void onAddedToEntity()
         {
-            canvas = entity.scene.createEntity("canvas").addComponent(new UICanvas());
-            canvas.isFullScreen = true;
-            canvas.renderLayer = SCREEN_SPACE_RENDER_LAYER;
-            table = canvas.stage.addElement(new Table());
-            table.setFillParent(true).left().top();
-            table.row().setPadTop(10);
+            _canvas = entity.scene.createEntity("canvas").addComponent(new UICanvas());
+            _canvas.isFullScreen = true;
+            _canvas.renderLayer = ScreenSpaceRenderLayer;
+            _table = _canvas.stage.addElement(new Table());
+            _table.setFillParent(true).left().top();
+            _table.row().setPadTop(10);
             var healthButtonStyle = new ButtonStyle(new PrimitiveDrawable(Color.Green, 10f, 12f), new PrimitiveDrawable(Color.Green, 12f, 10f), new PrimitiveDrawable(Color.Green, 10f, 12f))
             {
             };
             var enemyHealthButtonStyle = new ButtonStyle(new PrimitiveDrawable(Color.Red, 10f, 10f), new PrimitiveDrawable(Color.Red, 10f, 10f), new PrimitiveDrawable(Color.Red, 10f, 10f))
             {
             };
-            healthBar = new Button(healthButtonStyle);
-            glassesBar = new Button(enemyHealthButtonStyle);
-            table.add(healthBar).setMinWidth(20).setPadLeft(5f).setPadTop(12f);
-            table.add(glassesBar).setMinWidth(20).setMinHeight(0).right().setPadLeft(475).setPadTop(12f);
-            addText("Player Health", 6, 1);
-            addText("Eyes", 500, 1);
-            setupScore();
-            showTutorial();
+            _healthBar = new Button(healthButtonStyle);
+            _glassesBar = new Button(enemyHealthButtonStyle);
+            _table.add(_healthBar).setMinWidth(20).setPadLeft(5f).setPadTop(12f);
+            _table.add(_glassesBar).setMinWidth(20).setMinHeight(0).right().setPadLeft(475).setPadTop(12f);
+            AddText("Player Health", 6, 1);
+            AddText("Eyes", 500, 1);
+            SetupScore();
+            ShowTutorial();
         }
         void IUpdatable.update()
         {
 
-            updatePlayerHealth();
-            updatePlayerEyes();
-            updateScore();
-            removeTutorial();
+            UpdatePlayerHealth();
+            UpdatePlayerEyes();
+            UpdateScore();
+            RemoveTutorial();
         }
-        void updatePlayerHealth()
+
+        private void UpdatePlayerHealth()
         {
             if (entity.scene!= null)
             {
-                healthBar.setWidth(Player.playerRef.hitDetector.hitsUntilDead * 30);
+                _healthBar.setWidth(Player.PlayerRef.HitDetector.HitsUntilDead * 30);
 
             }
         }
-        void updatePlayerEyes()
+
+        private void UpdatePlayerEyes()
         {
             if (entity.scene!= null)
             {
-                glassesBar.setWidth(Mathf.clamp(Player.playerRef.glassesMeter * 2, 0, 290));
+                _glassesBar.setWidth(Mathf.clamp(Player.PlayerRef.GlassesMeter * 2, 0, 290));
             }
         }
-        void addText(string text, int xOffset, int yOffset)
+
+        private void AddText(string text, int xOffset, int yOffset)
         {
             var textEntity = entity.scene.createEntity("text");
             textEntity.addComponent(new Text(Graphics.instance.bitmapFont, text, new Vector2(xOffset, yOffset), Color.White))
-                .setRenderLayer(SCREEN_SPACE_RENDER_LAYER);
+                .setRenderLayer(ScreenSpaceRenderLayer);
         }
-        void addEnemyHealth()
+
+        private void AddEnemyHealth()
         {
-            if (Player.playerRef.currentTarget != null && !enemyEngaged)
+            if (Player.PlayerRef.CurrentTarget != null && !_enemyEngaged)
             {
-                table.add(enemyHealthBar).setMinWidth(20).setMinHeight(0).right().setPadLeft(475).setPadTop(12f);
-                addText("Enemy", 500, 1);
-                enemyEngaged = true;
+                _table.add(_enemyHealthBar).setMinWidth(20).setMinHeight(0).right().setPadLeft(475).setPadTop(12f);
+                AddText("Enemy", 500, 1);
+                _enemyEngaged = true;
             }
         }
-        void updateEnemyHealth()
+
+        private void UpdateEnemyHealth()
         {
-             if (Player.playerRef.currentTarget != null && enemyEngaged)
+             if (Player.PlayerRef.CurrentTarget != null && _enemyEngaged)
              {
-                enemyHealthBar.setWidth(Player.playerRef.currentTarget.getComponent<HitController>().getLife() * 30);
+                _enemyHealthBar.setWidth(Player.PlayerRef.CurrentTarget.getComponent<HitController>().GetLife() * 30);
              }
         }
-        void removeEnemyHealth()
+
+        private void RemoveEnemyHealth()
         {
-            if (Player.playerRef.currentTarget == null)
+            if (Player.PlayerRef.CurrentTarget == null)
             {
-                enemyEngaged = false;
-                table.removeElement(enemyHealthBar);
+                _enemyEngaged = false;
+                _table.removeElement(_enemyHealthBar);
             }
         }
-        void showAndRemoveEnemyHealth()
+
+        private void ShowAndRemoveEnemyHealth()
         {
             if (entity.scene != null)
             {
-                addEnemyHealth();
-                removeEnemyHealth();
-                updateEnemyHealth();
+                AddEnemyHealth();
+                RemoveEnemyHealth();
+                UpdateEnemyHealth();
                 
             }
         }
-        void setupScore()
+
+        private void SetupScore()
         {
-            var scoreString = "Score: " + score;
-            scoreEntity = entity.scene.createEntity("score");
-            scoreEntity.addComponent(new Text(Graphics.instance.bitmapFont, scoreString, new Vector2(Screen.width / 2.4f, 1), Color.White))
-                .setRenderLayer(SCREEN_SPACE_RENDER_LAYER);
-           scoreEntity.scale = new Vector2(2f);
+            var scoreString = "Score: " + _score;
+            _scoreEntity = entity.scene.createEntity("score");
+            _scoreEntity.addComponent(new Text(Graphics.instance.bitmapFont, scoreString, new Vector2(Screen.width / 2.4f, 1), Color.White))
+                .setRenderLayer(ScreenSpaceRenderLayer);
+           _scoreEntity.scale = new Vector2(2f);
         }
-        void updateScore()
+
+        private void UpdateScore()
         {
-            score = Player.playerRef.score;
-            scoreEntity.getComponent<Text>().setText("Score: " + score);
+            _score = Player.PlayerRef.Score;
+            _scoreEntity.getComponent<Text>().setText("Score: " + _score);
         }
-        void showTutorial()
+
+        private void ShowTutorial()
         {
-            tutorial = entity.scene.createEntity("tutorial");
-            tutorial.addComponent(new Text(Graphics.instance.bitmapFont, "Press E to See...", new Vector2(20, Screen.height - 20f), Color.White)).setRenderLayer(SCREEN_SPACE_RENDER_LAYER);
-            tutorial.scale = new Vector2(2);
+            _tutorial = entity.scene.createEntity("tutorial");
+            _tutorial.addComponent(new Text(Graphics.instance.bitmapFont, "Press E to See...", new Vector2(20, Screen.height - 20f), Color.White)).setRenderLayer(ScreenSpaceRenderLayer);
+            _tutorial.scale = new Vector2(2);
         }
-        void removeTutorial()
+
+        private void RemoveTutorial()
         {
-            if (Player.playerRef.hasUsedGlasses && tutorial!= null)
+            if (Player.PlayerRef.HasUsedGlasses && _tutorial!= null)
             {
-                tutorial.getComponent<Text>().setText("");
+                _tutorial.getComponent<Text>().setText("");
             }
         }
 
